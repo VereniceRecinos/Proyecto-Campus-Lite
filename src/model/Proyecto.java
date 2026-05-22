@@ -12,12 +12,20 @@ public class Proyecto extends Evaluacion {
 
         super(nombre, ponderacion);
 
-        this.nota = nota;
-    }
+        if (nota < 0 || nota > 100) {
+        	throw new IllegalArgumentException(
+        	"La nota debe estar entre 0 y 100"
+        	);
+        	}
 
-    @Override
-    public double puntajeObtenido() {
+        	this.nota = nota;
+        	}
 
-        return nota * (ponderacion / 100);
+        	@Override
+        	public double puntajeObtenido() {
+
+        	double notaFinal = nota * 1.1;
+
+        	return notaFinal * (ponderacion / 100);
     }
 }

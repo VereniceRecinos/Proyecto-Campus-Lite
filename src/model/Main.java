@@ -5,56 +5,66 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-        Estudiante estudiante1 = new Estudiante(
-                "2026001",
-                "Emilyn",
-                "Recinos",
-                "emilyn@gmail.com"
-        );
+		Estudiante estudiante1 = new Estudiante(
+				"2026001",
+				"Emilyn",
+				"Recinos",
+				"emilyn@gmail.com"
+				);
 
-        Curso curso1 = new Curso(
-                "IPC1",
-                "Programacion 1",
-                30
-        );
+		Curso curso1 = new Curso(
+				"IPC1",
+				"Programacion 1", 30);
 
-        Inscripcion inscripcion1 = new Inscripcion(
-                estudiante1,
-                curso1,
-                "21/05/2026"
-        );
+		Inscripcion inscripcion1 = new Inscripcion(
+				estudiante1,
+				curso1,
+				"21/05/2026");
 
-        Evaluacion examen1 = new ExamenEscrito(
-                "Parcial 1",
-                30,
-                95
-        );
+		Evaluacion examen1 = new ExamenEscrito(
+				"Parcial 1", 30, 95);
 
-        System.out.println(
-                estudiante1.getNombre()
-        );
+		Evaluacion laboratorio1 = new Laboratorio(
+				"Laboratorio 1", 20, 90);
 
-        System.out.println(
-                curso1.getNombre()
-        );
+		Evaluacion proyecto1 = new Proyecto(
+				"Proyecto Final", 50, 88);
 
-        System.out.println(
-                inscripcion1.getFechaInscripcion()
-        );
+		System.out.println(
+				estudiante1.getNombre()
+				);
 
-        System.out.println(
-                examen1.puntajeObtenido()
-        );
+		System.out.println(
+				curso1.getNombre()
+				);
 
-        List<Evaluacion> evaluaciones =
-                new ArrayList<>();
+		System.out.println(
+				inscripcion1.getFechaInscripcion()
+				);
 
-        evaluaciones.add(examen1);
+		List<Evaluacion> evaluaciones =
+				new ArrayList<>();
 
-        System.out.println(
-                evaluaciones.size()
-        );
-    }
+		evaluaciones.add(examen1);
+		evaluaciones.add(laboratorio1);
+		evaluaciones.add(proyecto1);
+
+		System.out.println(
+				"\n---- POLIMORFISMO ----"
+				);
+
+		for (Evaluacion e : evaluaciones) {
+
+			System.out.println(
+					e.getNombre()
+					);
+
+			System.out.println(
+					"Puntaje obtenido: " +
+					String.format("%.2f",e.puntajeObtenido())
+			);
+		}
+	}
 }

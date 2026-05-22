@@ -2,22 +2,30 @@ package model;
 
 public class Laboratorio extends Evaluacion {
 
-    private double nota;
+	private double nota;
 
-    public Laboratorio(
-            String nombre,
-            double ponderacion,
-            double nota
-    ) {
+	public Laboratorio(
+			String nombre,
+			double ponderacion,
+			double nota
+			) {
 
-        super(nombre, ponderacion);
+		super(nombre, ponderacion);
 
-        this.nota = nota;
-    }
+		if (nota < 0 || nota > 100) {
+throw new IllegalArgumentException(
+"La nota debe estar entre 0 y 100"
+);
+		}
 
-    @Override
-    public double puntajeObtenido() {
+		this.nota = nota;
+	}
 
-        return nota * (ponderacion / 100);
-    }
+	@Override
+	public double puntajeObtenido() {
+
+		double bono = 2;
+
+		return (nota + bono) * (ponderacion / 100);
+	}
 }
