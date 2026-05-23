@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import view.EduManagerFrame;
+import view.PantallaEstudiantes;
 
 public class Main {
 
@@ -14,6 +15,12 @@ public class Main {
 		// Ejecutamos la pantalla en el hilo de Swing
         SwingUtilities.invokeLater(() -> {
             new EduManagerFrame().setVisible(true);
+        });
+        
+        // Ejecutamos la pantalla Estudiantes
+        SwingUtilities.invokeLater(() -> {
+            PantallaEstudiantes ventana = new PantallaEstudiantes();
+            ventana.setVisible(true);
         });
 
 		Estudiante estudiante1 = new Estudiante(
