@@ -52,17 +52,36 @@ public class EduManagerFrame extends JFrame {
         panelHeader.setBackground(new Color(45, 118, 185));
         panelHeader.setPreferredSize(new Dimension(1000, 45));
         
-        JLabel lblTituloApp = new JLabel("  EDUMANAGER DESKTOP", SwingConstants.LEFT);
-        lblTituloApp.setForeground(Color.WHITE);
-        lblTituloApp.setFont(new Font("Arial", Font.BOLD, 13));
+        JButton btnTituloApp = new JButton("  EDUMANAGER DESKTOP");
+            btnTituloApp.setHorizontalAlignment(SwingConstants.LEFT);
+            btnTituloApp.setForeground(Color.WHITE);
+            btnTituloApp.setFont(new Font("Arial", Font.BOLD, 13));
+
+            /* Quitar apariencia de botón */
+            btnTituloApp.setBorderPainted(false);
+            btnTituloApp.setFocusPainted(false);
+            btnTituloApp.setContentAreaFilled(false);
+            btnTituloApp.setOpaque(false);
+            btnTituloApp.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         JLabel lblUsuario = new JLabel("Admin User  [AU]  ", SwingConstants.RIGHT);
         lblUsuario.setForeground(Color.WHITE);
         lblUsuario.setFont(new Font("Arial", Font.PLAIN, 12));
         
-        panelHeader.add(lblTituloApp, BorderLayout.WEST);
+        panelHeader.add(btnTituloApp, BorderLayout.WEST);
         panelHeader.add(lblUsuario, BorderLayout.EAST);
         add(panelHeader, BorderLayout.NORTH);
+        
+        //eveneto btnTituloApp
+        // Ejecutamos la pantalla PantallaEstudiante
+        btnTituloApp.addActionListener(e -> java.awt.EventQueue.invokeLater(() -> {
+            PantallaEstudiantes ventana = new PantallaEstudiantes();
+            ventana.setVisible(true);
+        }));
+        
+        //cerramos EduManager
+        btnTituloApp.addActionListener(e -> dispose());
+        
 
         // 3. CONTENEDOR CENTRAL
         JPanel panelCentral = new JPanel(new BorderLayout());

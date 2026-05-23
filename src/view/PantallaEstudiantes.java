@@ -69,10 +69,16 @@ public class PantallaEstudiantes extends JFrame {
         btnStudent.setMaximumSize(new Dimension(180, 40));
         btnStudent.setBackground(Color.WHITE); 
         
+        JButton btnCatalog = new JButton("Catalogo de cursos");
+        btnCatalog.setMaximumSize(new Dimension(180, 40));
+        btnCatalog.setBackground(Color.WHITE); 
+        
         panelMenu.add(Box.createRigidArea(new Dimension(0, 20))); 
         panelMenu.add(btnDashboard);
         panelMenu.add(Box.createRigidArea(new Dimension(0, 10)));
         panelMenu.add(btnStudent);
+        panelMenu.add(Box.createRigidArea(new Dimension(0, 20))); 
+        panelMenu.add(btnCatalog);
         
         add(panelMenu, BorderLayout.WEST);
 
@@ -143,6 +149,11 @@ public class PantallaEstudiantes extends JFrame {
         btnRegistrar.addActionListener(e -> guardarOActualizarEstudiante());
         btnLimpiar.addActionListener(e -> limpiarCampos());
         btnDashboard.addActionListener(e -> JOptionPane.showMessageDialog(this, "Regresando al Menú..."));
+         // Ejecutamos la pantalla en el hilo de Swing
+        btnCatalog.addActionListener(e -> java.awt.EventQueue.invokeLater(() -> {
+            new EduManagerFrame().setVisible(true);
+        }));
+        btnCatalog.addActionListener(e -> dispose());
     }
 
     // --- LÓGICA DE REGISTRO Y ACTUALIZACIÓN ---

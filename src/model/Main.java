@@ -1,5 +1,6 @@
 package model;
 
+    /*
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,23 +8,51 @@ import javax.swing.SwingUtilities;
 
 import view.EduManagerFrame;
 import view.PantallaEstudiantes;
+*/
+
+import javax.swing.UIManager;
+import view.Login;
 
 public class Main {
 
 	public static void main(String[] args) {
+            
+            
+
+        try {
+
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName()
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        java.awt.EventQueue.invokeLater(() -> {
+
+            new Login().setVisible(true);
+        });
+            // se agrega Login
+            
 		
-		// Ejecutamos la pantalla en el hilo de Swing
+	    /*	// Ejecutamos la pantalla en el hilo de Swing
         SwingUtilities.invokeLater(() -> {
             new EduManagerFrame().setVisible(true);
         });
-        
+    
         // Ejecutamos la pantalla Estudiantes
         SwingUtilities.invokeLater(() -> {
             PantallaEstudiantes ventana = new PantallaEstudiantes();
             ventana.setVisible(true);
-        });
+        });*/
 
-		Estudiante estudiante1 = new Estudiante(
+
+	}
+        
+        /*public static void estudent_test () {
+            		Estudiante estudiante1 = new Estudiante(
 				"2026001",
 				"Emilyn",
 				"Recinos",
@@ -82,5 +111,7 @@ public class Main {
 					String.format("%.2f",e.puntajeObtenido())
 			);
 		}
-	}
+        }*/
+                
 }
+
