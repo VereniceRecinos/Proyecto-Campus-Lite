@@ -3,9 +3,18 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
+import view.EduManagerFrame;
+
 public class Main {
 
 	public static void main(String[] args) {
+		
+		// Ejecutamos la pantalla en el hilo de Swing
+        SwingUtilities.invokeLater(() -> {
+            new EduManagerFrame().setVisible(true);
+        });
 
 		Estudiante estudiante1 = new Estudiante(
 				"2026001",
