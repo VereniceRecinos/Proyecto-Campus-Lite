@@ -84,8 +84,11 @@ public class Login extends JFrame{
         panelLogo.add(lblLogo);
 
         /* =========================================
-         * USUARIO
-         * ========================================= */
+        * USUARIO
+        * ========================================= */
+        JPanel panelUsuario = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        panelUsuario.setBackground(new Color(245, 245, 245));
+        
         JLabel lblUsuario = new JLabel("Usuario/Código:");
         lblUsuario.setFont(new Font("Arial", Font.BOLD, 16));
 
@@ -94,9 +97,14 @@ public class Login extends JFrame{
         txtUsuario.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         txtUsuario.setFont(new Font("Arial", Font.PLAIN, 16));
 
+        panelUsuario.add(lblUsuario);
+
         /* =========================================
-         * PASSWORD
-         * ========================================= */
+        * PASSWORD
+        * ========================================= */
+        JPanel panelPassword = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        panelPassword.setBackground(new Color(245, 245, 245));
+
         JLabel lblPassword = new JLabel("Contraseña:");
         lblPassword.setFont(new Font("Arial", Font.BOLD, 16));
 
@@ -104,6 +112,7 @@ public class Login extends JFrame{
         txtPassword.setPreferredSize(new Dimension(400, 45));
         txtPassword.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         txtPassword.setFont(new Font("Arial", Font.PLAIN, 16));
+        panelPassword.add(lblPassword);
 
         /* =========================================
          * ERROR
@@ -168,13 +177,13 @@ public class Login extends JFrame{
 
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 25)));
 
-        panelPrincipal.add(lblUsuario);
+        panelPrincipal.add(panelUsuario);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 8)));
         panelPrincipal.add(txtUsuario);
 
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 25)));
 
-        panelPrincipal.add(lblPassword);
+        panelPrincipal.add(panelPassword);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 8)));
         panelPrincipal.add(txtPassword);
 
@@ -242,11 +251,16 @@ public class Login extends JFrame{
 
             lblError.setVisible(false);
 
-            // Ejecutamos la pantalla Estudiantes
+            // Ejecutamos la pantalla principal
+        java.awt.EventQueue.invokeLater(() -> {
+            new DashboardView().setVisible(true);
+        });
+            
+         /*   // Ejecutamos la pantalla Estudiantes
         java.awt.EventQueue.invokeLater(() -> {
             PantallaEstudiantes ventana = new PantallaEstudiantes();
             ventana.setVisible(true);
-        });
+        });  */
         
             dispose();
 

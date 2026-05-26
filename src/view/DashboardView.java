@@ -329,15 +329,15 @@ public class DashboardView extends JFrame {
             JOptionPane.showMessageDialog(
                     this,
                     "Dashboard seleccionado."
-            );
+            ); 
         });
 
-        btnStudents.addActionListener(e -> {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Módulo estudiantes."
-            );
+        btnStudents.addActionListener (e -> {
+            
+            PantallaEstudiantes ventana = new PantallaEstudiantes();
+            ventana.setVisible(true);
+            
+            dispose();
         });
 
         btnCourses.addActionListener(e -> {

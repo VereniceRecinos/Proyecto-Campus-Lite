@@ -148,12 +148,21 @@ public class PantallaEstudiantes extends JFrame {
          * ========================================= */
         btnRegistrar.addActionListener(e -> guardarOActualizarEstudiante());
         btnLimpiar.addActionListener(e -> limpiarCampos());
-        btnDashboard.addActionListener(e -> JOptionPane.showMessageDialog(this, "Regresando al Menú..."));
+        
+        //Ejecutamos Regresar a la pantalla Menu Principal
+        btnDashboard.addActionListener (e -> {
+            
+            DashboardView ventana = new DashboardView();
+            ventana.setVisible(true);
+            
+            dispose();
+        });
          // Ejecutamos la pantalla en el hilo de Swing
         btnCatalog.addActionListener(e -> java.awt.EventQueue.invokeLater(() -> {
             new EduManagerFrame().setVisible(true);
         }));
         btnCatalog.addActionListener(e -> dispose());
+        
     }
 
     // --- LÓGICA DE REGISTRO Y ACTUALIZACIÓN ---
