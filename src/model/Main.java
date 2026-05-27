@@ -11,7 +11,7 @@ import view.PantallaEstudiantes;
 */
 
 import javax.swing.UIManager;
-import view.Login;
+import view.DashboardView;
 
 public class Main {
 
@@ -32,7 +32,7 @@ public class Main {
 
         java.awt.EventQueue.invokeLater(() -> {
 
-            new Login().setVisible(true);
+            new DashboardView().setVisible(true);
         });
         
             // se agrega Login

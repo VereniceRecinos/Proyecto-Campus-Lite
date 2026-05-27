@@ -1,5 +1,6 @@
 package view;
 
+import view.EduManagerFrame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -25,11 +26,11 @@ import javax.swing.table.DefaultTableModel;
 public class DashboardView extends JFrame {
 
     // MENU
-    private JButton btnDashboard;
-    private JButton btnStudents;
-    private JButton btnCourses;
-    private JButton btnReports;
-    private JButton btnSettings;
+	private JButton btnStudents;
+	private JButton btnCourses;
+	private JButton btnEvaluaciones;
+	private JButton btnInscripciones;
+	private JButton btnSalir;
 
     // HEADER
     private JButton btnTituloApp;
@@ -63,234 +64,113 @@ public class DashboardView extends JFrame {
      * ========================================= */
     private void inicializarComponentes() {
 
-        /* =========================================
-         * HEADER SUPERIOR
-         * ========================================= */
-        JPanel panelHeader = new JPanel(new BorderLayout());
-        panelHeader.setBackground(new Color(235, 235, 235));
-        panelHeader.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+    	/* =========================================
+    	 * HEADER SUPERIOR
+    	 * ========================================= */
+    	JPanel panelHeader = new JPanel();
+    	panelHeader.setLayout(new BoxLayout(panelHeader, BoxLayout.Y_AXIS));
+    	panelHeader.setBackground(new Color(10, 60, 80));
+    	panelHeader.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        btnTituloApp = new JButton("⌂ EduManager Desktop");
-        btnTituloApp.setHorizontalAlignment(SwingConstants.LEFT);
-        btnTituloApp.setForeground(Color.BLACK);
-        btnTituloApp.setFont(new Font("Arial", Font.BOLD, 14));
+    	JLabel lblTituloSistema = new JLabel("Campus Lite");
+    	lblTituloSistema.setForeground(Color.WHITE);
+    	lblTituloSistema.setFont(new Font("Arial", Font.BOLD, 30));
 
-        btnTituloApp.setBorderPainted(false);
-        btnTituloApp.setFocusPainted(false);
-        btnTituloApp.setContentAreaFilled(false);
-        btnTituloApp.setOpaque(false);
-        btnTituloApp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    	JLabel lblSubtituloSistema = new JLabel("Sistema Académico");
+    	lblSubtituloSistema.setForeground(Color.WHITE);
+    	lblSubtituloSistema.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        JPanel panelMenuTop = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
-        panelMenuTop.setOpaque(false);
+    	panelHeader.add(lblTituloSistema);
+    	panelHeader.add(lblSubtituloSistema);
 
-        panelMenuTop.add(btnTituloApp);
-        panelMenuTop.add(new JLabel("File"));
-        panelMenuTop.add(new JLabel("Edit"));
-        panelMenuTop.add(new JLabel("View"));
-        panelMenuTop.add(new JLabel("Tools"));
-        panelMenuTop.add(new JLabel("Help"));
+    	add(panelHeader, BorderLayout.NORTH);
 
-        lblUsuario = new JLabel("Admin User (Session: 402)   AU");
-        lblUsuario.setFont(new Font("Arial", Font.ITALIC, 13));
+    	/* =========================================
+    	 * MENU LATERAL
+    	 * ========================================= */
+    	JPanel panelMenu = new JPanel();
+    	panelMenu.setBackground(new Color(15, 70, 90));
+    	panelMenu.setPreferredSize(new Dimension(230, 0));
+    	panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
+    	panelMenu.setBorder(BorderFactory.createEmptyBorder(20, 15, 20, 15));
 
-        panelHeader.add(panelMenuTop, BorderLayout.WEST);
-        panelHeader.add(lblUsuario, BorderLayout.EAST);
+    	btnStudents = crearBotonMenu("Estudiantes");
+    	btnCourses = crearBotonMenu("Cursos");
+    	btnEvaluaciones = crearBotonMenu("Evaluaciones");
+    	btnInscripciones = crearBotonMenu("Inscripciones");
+    	btnSalir = crearBotonMenu("Salir");
 
-        add(panelHeader, BorderLayout.NORTH);
+    	panelMenu.add(btnStudents);
+    	panelMenu.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        /* =========================================
-         * MENU LATERAL
-         * ========================================= */
-        JPanel panelMenu = new JPanel();
-        panelMenu.setBackground(new Color(240, 240, 240));
-        panelMenu.setPreferredSize(new Dimension(210, 0));
-        panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
-        panelMenu.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.LIGHT_GRAY));
+    	panelMenu.add(btnCourses);
+    	panelMenu.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        JLabel lblNav = new JLabel("NAVIGATION");
-        lblNav.setFont(new Font("Arial", Font.BOLD, 14));
-        lblNav.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 0));
+    	panelMenu.add(btnEvaluaciones);
+    	panelMenu.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        btnDashboard = crearBotonMenu("▦  Dashboard");
-        btnStudents = crearBotonMenu("⚇  Students");
-        btnCourses = crearBotonMenu("▣  Courses");
-        btnReports = crearBotonMenu("▥  Reports");
-        btnSettings = crearBotonMenu("⚙  Settings");
+    	panelMenu.add(btnInscripciones);
+    	panelMenu.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        panelMenu.add(lblNav);
-        panelMenu.add(btnDashboard);
-        panelMenu.add(btnStudents);
-        panelMenu.add(btnCourses);
-        panelMenu.add(btnReports);
-        panelMenu.add(btnSettings);
+    	panelMenu.add(btnSalir);
 
-        add(panelMenu, BorderLayout.WEST);
+    	add(panelMenu, BorderLayout.WEST);
 
-        /* =========================================
-         * PANEL CENTRAL
-         * ========================================= */
-        JPanel panelCentral = new JPanel();
-        panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
-        panelCentral.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        panelCentral.setBackground(new Color(245, 245, 245));
+    	/* =========================================
+    	 * PANEL CENTRAL
+    	 * ========================================= */
+    	JPanel panelCentral = new JPanel();
+    	panelCentral.setBackground(new Color(245, 245, 245));
+    	panelCentral.setLayout(new GridLayout(1, 1));
 
-        JLabel lblTitulo = new JLabel("Sistema de Control Académico");
-        lblTitulo.setFont(new Font("Arial", Font.PLAIN, 32));
+    	JPanel panelBienvenida = new JPanel();
+    	panelBienvenida.setBackground(Color.WHITE);
+    	panelBienvenida.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+    	panelBienvenida.setLayout(new BoxLayout(panelBienvenida, BoxLayout.Y_AXIS));
 
-        JLabel lblSubtitulo = new JLabel("Central administration panel. Ready for input.");
-        lblSubtitulo.setFont(new Font("Arial", Font.PLAIN, 16));
-        lblSubtitulo.setForeground(Color.DARK_GRAY);
+    	JLabel lblBienvenida = new JLabel("Bienvenido a Campus Lite,");
+    	lblBienvenida.setFont(new Font("Arial", Font.BOLD, 42));
+    	lblBienvenida.setAlignmentX(CENTER_ALIGNMENT);
 
-        panelCentral.add(lblTitulo);
-        panelCentral.add(Box.createRigidArea(new Dimension(0, 5)));
-        panelCentral.add(lblSubtitulo);
-        panelCentral.add(Box.createRigidArea(new Dimension(0, 20)));
+    	JLabel lblSistema = new JLabel("Tu Sistema Académico");
+    	lblSistema.setFont(new Font("Arial", Font.BOLD, 38));
+    	lblSistema.setAlignmentX(CENTER_ALIGNMENT);
 
-        /* =========================================
-         * PANEL ESTADÍSTICAS
-         * ========================================= */
-        JPanel panelStats = new JPanel(new BorderLayout());
-        panelStats.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        panelStats.setBackground(Color.WHITE);
-        panelStats.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
+    	panelBienvenida.add(Box.createVerticalGlue());
+    	panelBienvenida.add(lblBienvenida);
+    	panelBienvenida.add(Box.createRigidArea(new Dimension(0, 20)));
+    	panelBienvenida.add(lblSistema);
+    	panelBienvenida.add(Box.createVerticalGlue());
 
-        JPanel headerStats = new JPanel(new BorderLayout());
-        headerStats.setBackground(Color.BLACK);
-        headerStats.setPreferredSize(new Dimension(100, 25));
+    	panelCentral.add(panelBienvenida);
 
-        JLabel lblHeaderStats = new JLabel(" Gestión de Estudiantes");
-        lblHeaderStats.setForeground(Color.WHITE);
-
-        headerStats.add(lblHeaderStats, BorderLayout.WEST);
-
-        panelStats.add(headerStats, BorderLayout.NORTH);
-
-        JPanel contenidoStats = new JPanel(new BorderLayout());
-        contenidoStats.setBackground(Color.WHITE);
-        contenidoStats.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-
-        JPanel leftInfo = new JPanel();
-        leftInfo.setBackground(Color.WHITE);
-        leftInfo.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-        JLabel lblIcon = new JLabel("👥");
-        lblIcon.setFont(new Font("Arial", Font.PLAIN, 50));
-
-        JPanel textInfo = new JPanel();
-        textInfo.setBackground(Color.WHITE);
-        textInfo.setLayout(new BoxLayout(textInfo, BoxLayout.Y_AXIS));
-
-        JLabel lblRegistry = new JLabel("Registry Statistics");
-        lblRegistry.setFont(new Font("Arial", Font.BOLD, 24));
-
-        JLabel lblUpdate = new JLabel("Update frequency: Real-time");
-        lblUpdate.setForeground(Color.DARK_GRAY);
-
-        JPanel panelMiniBtns = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelMiniBtns.setBackground(Color.WHITE);
-
-        JButton btnInscripciones = new JButton("Inscripciones");
-        JButton btnPerfiles = new JButton("Perfiles");
-
-        panelMiniBtns.add(btnInscripciones);
-        panelMiniBtns.add(btnPerfiles);
-
-        textInfo.add(lblRegistry);
-        textInfo.add(lblUpdate);
-        textInfo.add(Box.createRigidArea(new Dimension(0, 10)));
-        textInfo.add(panelMiniBtns);
-
-        leftInfo.add(lblIcon);
-        leftInfo.add(textInfo);
-
-        JPanel cards = new JPanel(new GridLayout(1, 3, 10, 0));
-        cards.setBackground(Color.WHITE);
-
-        cards.add(crearCard("1,248", "TOTAL ALUMNOS", Color.WHITE));
-        cards.add(crearCard("42", "INGRESOS", Color.WHITE));
-        cards.add(crearCard("12", "ALERTAS", new Color(255, 220, 220)));
-
-        JPanel contenedorCards = new JPanel(new BorderLayout());
-        contenedorCards.setBackground(Color.WHITE);
-        contenedorCards.add(cards, BorderLayout.SOUTH);
-
-        contenidoStats.add(leftInfo, BorderLayout.NORTH);
-        contenidoStats.add(contenedorCards, BorderLayout.CENTER);
-
-        panelStats.add(contenidoStats, BorderLayout.CENTER);
-
-        panelCentral.add(panelStats);
-        panelCentral.add(Box.createRigidArea(new Dimension(0, 20)));
-
-        /* =========================================
-         * LOGS
-         * ========================================= */
-        JPanel panelLogs = new JPanel(new BorderLayout());
-        panelLogs.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        panelLogs.setBackground(Color.WHITE);
-
-        JPanel logsHeader = new JPanel(new BorderLayout());
-        logsHeader.setBackground(new Color(80, 90, 105));
-        logsHeader.setPreferredSize(new Dimension(100, 35));
-
-        JLabel lblLogs = new JLabel(" Activity Log / Event Monitor");
-        lblLogs.setForeground(Color.WHITE);
-        lblLogs.setFont(new Font("Arial", Font.BOLD, 14));
-
-        logsHeader.add(lblLogs, BorderLayout.WEST);
-
-        panelLogs.add(logsHeader, BorderLayout.NORTH);
-
-        String[] columnas = {"T", "Description", "Timestamp"};
-
-        modeloTabla = new DefaultTableModel(columnas, 0);
-
-        tablaLogs = new JTable(modeloTabla);
-        tablaLogs.setRowHeight(30);
-
-        modeloTabla.addRow(new Object[]{
-            "ⓘ",
-            "Calificaciones Matemáticas II publicadas.",
-            "Hace 2 horas"
-        });
-
-        modeloTabla.addRow(new Object[]{
-            "✓",
-            "Nuevo estudiante inscrito: García, Roberto.",
-            "09:15 AM"
-        });
-
-        modeloTabla.addRow(new Object[]{
-            "⚠",
-            "Backup completed with 2 warnings.",
-            "Ayer 11:45 PM"
-        });
-
-        JScrollPane scrollLogs = new JScrollPane(tablaLogs);
-
-        panelLogs.add(scrollLogs, BorderLayout.CENTER);
-
-        panelCentral.add(panelLogs);
-
-        add(panelCentral, BorderLayout.CENTER);
+    	add(panelCentral, BorderLayout.CENTER);
+    	
     }
-
+    
     /* =========================================
-     * BOTÓN MENU
-     * ========================================= */
-    private JButton crearBotonMenu(String texto) {
+	 * BOTÓN MENU
+	 * ========================================= */
+	private JButton crearBotonMenu(String texto) {
 
-        JButton boton = new JButton(texto);
+	    JButton boton = new JButton(texto);
 
-        boton.setMaximumSize(new Dimension(180, 40));
-        boton.setHorizontalAlignment(SwingConstants.LEFT);
-        boton.setFocusPainted(false);
-        boton.setBackground(Color.WHITE);
-        boton.setFont(new Font("Arial", Font.PLAIN, 14));
+	    boton.setMaximumSize(new Dimension(190, 60));
+	    boton.setPreferredSize(new Dimension(190, 60));
 
-        return boton;
-    }
+	    boton.setHorizontalAlignment(SwingConstants.CENTER);
+
+	    boton.setFocusPainted(false);
+
+	    boton.setBackground(new Color(40, 140, 220));
+	    boton.setForeground(Color.BLACK);
+
+	    boton.setFont(new Font("Arial", Font.BOLD, 18));
+
+	    boton.setBorder(BorderFactory.createEmptyBorder());
+
+	    return boton;
+	}
 
     /* =========================================
      * CARD
@@ -324,14 +204,6 @@ public class DashboardView extends JFrame {
      * ========================================= */
     private void agregarEventos() {
 
-        btnDashboard.addActionListener(e -> {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Dashboard seleccionado."
-            ); 
-        });
-
         btnStudents.addActionListener (e -> {
             
             PantallaEstudiantes ventana = new PantallaEstudiantes();
@@ -342,13 +214,13 @@ public class DashboardView extends JFrame {
 
         btnCourses.addActionListener(e -> {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Módulo cursos."
-            );
+            EduManagerFrame ventana = new EduManagerFrame();
+            ventana.setVisible(true);
+
+            dispose(); // cierra Dashboard si se quiere cambiar de pantalla
         });
 
-        btnReports.addActionListener(e -> {
+        btnEvaluaciones.addActionListener(e -> {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -356,20 +228,17 @@ public class DashboardView extends JFrame {
             );
         });
 
-        btnSettings.addActionListener(e -> {
+        btnInscripciones.addActionListener(e -> {
 
             JOptionPane.showMessageDialog(
                     this,
                     "Configuraciones del sistema."
             );
         });
+        
+        btnSalir.addActionListener(e -> {
 
-        btnTituloApp.addActionListener(e -> {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "EduManager Desktop"
-            );
+            System.exit(0);
         });
     }
 
