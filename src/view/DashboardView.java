@@ -232,7 +232,7 @@ public class DashboardView extends JFrame {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Módulo Reporte"
+                    "Módulo Inscripciones"
             );
         });
         
