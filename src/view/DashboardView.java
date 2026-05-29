@@ -97,7 +97,7 @@ public class DashboardView extends JFrame {
     	btnStudents = crearBotonMenu("Estudiantes");
     	btnCourses = crearBotonMenu("Cursos");
     	btnEvaluaciones = crearBotonMenu("Evaluaciones");
-    	btnInscripciones = crearBotonMenu("Reporte");
+    	btnInscripciones = crearBotonMenu("Inscripciones");
     	btnSalir = crearBotonMenu("Salir");
 
     	panelMenu.add(btnStudents);
