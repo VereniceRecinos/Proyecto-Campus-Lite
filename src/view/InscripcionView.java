@@ -144,7 +144,10 @@ public class InscripcionView extends JFrame {
         tablePanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(220, 220, 220)),
                 BorderFactory.createEmptyBorder(20, 20, 20, 20)
+                
+                
         ));
+        
 
         JLabel lblTableTitle = new JLabel("Historial de Inscripciones");
         lblTableTitle.setFont(new Font("Arial", Font.BOLD, 24));
@@ -162,6 +165,8 @@ public class InscripcionView extends JFrame {
         enrollmentTable.setRowHeight(32);
         enrollmentTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 15));
         enrollmentTable.getTableHeader().setBackground(new Color(230, 235, 240));
+        
+        enrollmentTable.getTableHeader().setReorderingAllowed(false);
 
         JScrollPane scrollPane = new JScrollPane(enrollmentTable);
         scrollPane.getViewport().setBackground(Color.WHITE);
