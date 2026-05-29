@@ -97,7 +97,7 @@ public class DashboardView extends JFrame {
     	btnStudents = crearBotonMenu("Estudiantes");
     	btnCourses = crearBotonMenu("Cursos");
     	btnEvaluaciones = crearBotonMenu("Evaluaciones");
-    	btnInscripciones = crearBotonMenu("Inscripciones");
+    	btnInscripciones = crearBotonMenu("Reporte");
     	btnSalir = crearBotonMenu("Salir");
 
     	panelMenu.add(btnStudents);
@@ -224,7 +224,7 @@ public class DashboardView extends JFrame {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Módulo reportes."
+                    "Módulo Evaluaciones."
             );
         });
 
@@ -232,7 +232,7 @@ public class DashboardView extends JFrame {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Configuraciones del sistema."
+                    "Módulo Reporte"
             );
         });
         
