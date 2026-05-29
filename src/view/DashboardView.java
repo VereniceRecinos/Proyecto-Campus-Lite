@@ -1,6 +1,6 @@
 package view;
 
-import view.EduManagerFrame;
+import view.CoursesView;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -214,7 +214,7 @@ public class DashboardView extends JFrame {
 
         btnCourses.addActionListener(e -> {
 
-            EduManagerFrame ventana = new EduManagerFrame();
+            CoursesView ventana = new CoursesView();
             ventana.setVisible(true);
 
             dispose(); // cierra Dashboard si se quiere cambiar de pantalla

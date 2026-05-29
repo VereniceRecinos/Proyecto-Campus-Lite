@@ -159,7 +159,7 @@ public class PantallaEstudiantes extends JFrame {
         });
          // Ejecutamos la pantalla en el hilo de Swing
         btnCatalog.addActionListener(e -> java.awt.EventQueue.invokeLater(() -> {
-            new EduManagerFrame().setVisible(true);
+            new CoursesView().setVisible(true);
         }));
         btnCatalog.addActionListener(e -> dispose());
         
