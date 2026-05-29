@@ -234,11 +234,9 @@ public class DashboardView extends JFrame {
         });
 
         btnInscripciones.addActionListener(e -> {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Módulo Inscripciones"
-            );
+            InscripcionView ventana = new InscripcionView();
+            ventana.setVisible(true);
+            dispose();
         });
         
         btnSalir.addActionListener(e -> {
