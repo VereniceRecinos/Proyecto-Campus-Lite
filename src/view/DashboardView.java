@@ -206,7 +206,7 @@ public class DashboardView extends JFrame {
 
         btnStudents.addActionListener (e -> {
             
-            PantallaEstudiantes ventana = new PantallaEstudiantes();
+            StudentsView ventana = new StudentsView();
             ventana.setVisible(true);
             
             dispose();
