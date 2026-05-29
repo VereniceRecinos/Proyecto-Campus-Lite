@@ -222,10 +222,10 @@ public class DashboardView extends JFrame {
 
         btnEvaluaciones.addActionListener(e -> {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Módulo reportes."
-            );
+            EvaluacionesView ventana = new EvaluacionesView();
+            ventana.setVisible(true);
+           
+            dispose();
         });
 
         btnInscripciones.addActionListener(e -> {
