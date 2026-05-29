@@ -226,13 +226,18 @@ public class DashboardView extends JFrame {
             ventana.setVisible(true);
            
             dispose();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Módulo Evaluaciones."
+            );
         });
 
         btnInscripciones.addActionListener(e -> {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Configuraciones del sistema."
+                    "Módulo Inscripciones"
             );
         });
         
