@@ -28,4 +28,9 @@ throw new IllegalArgumentException(
 
 		return (nota + bono) * (ponderacion / 100);
 	}
+	
+	@Override
+	public double getNota() {
+	    return this.nota;
+	}
 }

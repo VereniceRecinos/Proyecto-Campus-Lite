@@ -1,18 +1,18 @@
 package view;
 
 import model.Estudiante;
+import model.Curso;
+import model.Inscripcion;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class StudentsView extends JFrame {
 
-    // Componentes del Formulario
     private JTextField txtStudentId;
     private JTextField txtFirstName;
     private JTextField txtLastName;
@@ -22,45 +22,43 @@ public class StudentsView extends JFrame {
     private JButton btnSave;
     private JButton btnClear;
     private JButton btnBack;
-    private JButton btnExit;
     private JButton btnEdit;
     private JButton btnDelete;
     
     private JTable studentTable;
     private DefaultTableModel tableModel;
     
-    // Lista de datos y estado
     private List<Estudiante> studentList;
+    private List<Curso> courseList;
+    private List<Inscripcion> enrollmentList;
+ 
     private boolean isEditing = false;
     private int editingIndex = -1;
 
-    public StudentsView() {
-        // 1. Configuracion de la ventana
+    public StudentsView(List<Estudiante> studentList, List<Curso> courseList, List<Inscripcion> enrollmentList) {
+    	this.studentList = studentList;
+        this.courseList = courseList;
+        this.enrollmentList = enrollmentList;
+        
         setTitle("EDUMANAGER DESKTOP - v2.4");
         setSize(1050, 650); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        studentList = new ArrayList<>();
-
-        // Panel Principal
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(new Color(245, 247, 250));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
 
-        // Titulo
         JLabel lblTitle = new JLabel("Gestión de Estudiantes");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 34));
         lblTitle.setForeground(new Color(10, 60, 80));
         lblTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 25, 0));
         mainPanel.add(lblTitle, BorderLayout.NORTH);
 
-        // Contenido centrado
         JPanel contentPanel = new JPanel(new BorderLayout(25, 0));
         contentPanel.setBackground(new Color(245, 247, 250));
 
-        // Panel izquierdo (formulario)
         JPanel formPanel = new JPanel();
         formPanel.setBackground(new Color(15, 70, 90));
         formPanel.setLayout(new GridBagLayout());
@@ -93,7 +91,6 @@ public class StudentsView extends JFrame {
         gbc.gridy = 0;
         formPanel.add(formTitlePanel, gbc);
 
-        // --- CARNET ---
         gbc.gridy++;
         formPanel.add(createWhiteLabel("Carnet (Números/Guiones)"), gbc);
         gbc.gridy++;
@@ -101,7 +98,6 @@ public class StudentsView extends JFrame {
         validateStudentId(txtStudentId);
         formPanel.add(txtStudentId, gbc);
 
-        // --- NOMBRES ---
         gbc.gridy++;
         formPanel.add(createWhiteLabel("Nombres (Letras)"), gbc);
         gbc.gridy++;
@@ -109,7 +105,6 @@ public class StudentsView extends JFrame {
         validateLetters(txtFirstName);
         formPanel.add(txtFirstName, gbc);
 
-        // --- APELLIDOS ---
         gbc.gridy++;
         formPanel.add(createWhiteLabel("Apellidos (Letras)"), gbc);
         gbc.gridy++;
@@ -117,7 +112,6 @@ public class StudentsView extends JFrame {
         validateLetters(txtLastName);
         formPanel.add(txtLastName, gbc);
 
-        // --- CORREO ---
         gbc.gridy++;
         formPanel.add(createWhiteLabel("Correo Autogenerado"), gbc);
         gbc.gridy++;
@@ -125,32 +119,27 @@ public class StudentsView extends JFrame {
         txtEmail.setEditable(false);
         formPanel.add(txtEmail, gbc);
 
-        // Botones de formulario
         gbc.gridy++;
         
         btnGenerateEmail = new JButton("Generar Correo");
         btnSave = new JButton("Registrar Estudiante");
         btnClear = new JButton("Limpiar");
         btnBack = new JButton("Volver al Menú");
-        btnExit = new JButton("Salir");
 
         styleButton(btnGenerateEmail, new Color(255, 255, 204)); 
         styleButton(btnSave, new Color(144, 238, 144));         
         styleButton(btnClear, new Color(173, 216, 230));        
-        styleButton(btnBack, new Color(211, 211, 211));         
-        styleButton(btnExit, new Color(255, 182, 193));         
+        styleButton(btnBack, new Color(211, 211, 211));                 
 
-        JPanel buttonPanel = new JPanel(new GridLayout(5, 1, 0, 8));
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 0, 8));
         buttonPanel.setBackground(new Color(15, 70, 90)); 
         buttonPanel.add(btnGenerateEmail);
         buttonPanel.add(btnSave);
         buttonPanel.add(btnClear);
         buttonPanel.add(btnBack);
-        buttonPanel.add(btnExit);
 
         formPanel.add(buttonPanel, gbc);
 
-        // Panel Derecho (Tabla)
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.setBackground(Color.WHITE);
         tablePanel.setBorder(BorderFactory.createCompoundBorder(
@@ -164,7 +153,6 @@ public class StudentsView extends JFrame {
         lblTableTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
         tablePanel.add(lblTableTitle, BorderLayout.NORTH);
 
-        // Configuracion de la tabla
         String[] columns = {"No.", "Carnet", "Nombres", "Apellidos", "Correo"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -177,10 +165,8 @@ public class StudentsView extends JFrame {
         studentTable.setRowHeight(32);
         studentTable.setFont(new Font("Arial", Font.PLAIN, 14));
         studentTable.setBackground(Color.WHITE);
-        studentTable.setForeground(Color.BLACK);
         studentTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 15));
         studentTable.getTableHeader().setBackground(new Color(230, 235, 240));
-        studentTable.getTableHeader().setForeground(Color.BLACK);
         studentTable.getTableHeader().setReorderingAllowed(false);
         studentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -189,29 +175,26 @@ public class StudentsView extends JFrame {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
         tablePanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Panel de acciones de la tabla
         JPanel tableActionsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         tableActionsPanel.setBackground(Color.WHITE);
         
         btnEdit = new JButton("Editar Seleccionado");
         btnDelete = new JButton("Eliminar Seleccionado");
         
-        styleButton(btnEdit, new Color(255, 228, 181)); // Naranja claro
-        styleButton(btnDelete, new Color(255, 182, 193)); // Rojo claro
+        styleButton(btnEdit, new Color(255, 228, 181)); 
+        styleButton(btnDelete, new Color(255, 182, 193)); 
 
         tableActionsPanel.add(btnEdit);
         tableActionsPanel.add(btnDelete);
         
         tablePanel.add(tableActionsPanel, BorderLayout.SOUTH);
 
-        // Agregar Paneles
         formPanel.setPreferredSize(new Dimension(320, 0));
         contentPanel.add(formPanel, BorderLayout.WEST);
         contentPanel.add(tablePanel, BorderLayout.CENTER);
         mainPanel.add(contentPanel, BorderLayout.CENTER);
         add(mainPanel, BorderLayout.CENTER);
 
-        // Eventos
         btnGenerateEmail.addActionListener(e -> generateEmail());
         btnSave.addActionListener(e -> saveStudent());
         btnClear.addActionListener(e -> clearForm());
@@ -219,16 +202,13 @@ public class StudentsView extends JFrame {
         btnDelete.addActionListener(e -> deleteSelectedStudent());
         
         btnBack.addActionListener(e -> {
-            new DashboardView().setVisible(true);
+        	new DashboardView(studentList, courseList, enrollmentList, null).setVisible(true);
             dispose();
         });
-        
-        btnExit.addActionListener(e -> System.exit(0));
 
         updateStudentTable();
     }
 
-    // --- UI ayudantes ---
     private JLabel createWhiteLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Arial", Font.BOLD, 15));
@@ -252,7 +232,6 @@ public class StudentsView extends JFrame {
         button.setForeground(Color.BLACK);
     }
 
-    // --- Validaciones en tiempo real ---
     private void validateStudentId(JTextField field) {
         field.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
@@ -271,7 +250,6 @@ public class StudentsView extends JFrame {
         });
     }
 
-    // --- Logica de negocios ---
     private void generateEmail() {
         String firstName = txtFirstName.getText().trim();
         String lastName = txtLastName.getText().trim();
@@ -336,7 +314,6 @@ public class StudentsView extends JFrame {
                     return;
                 }
             }
-            
             try {
                 Estudiante newStudent = new Estudiante(studentId, firstName, lastName, email);
                 studentList.add(newStudent);
@@ -351,7 +328,6 @@ public class StudentsView extends JFrame {
         clearForm();
     }
 
-    // --- LÓGICA DE EDICIÓN ---
     private void loadStudentForEditing() {
         int selectedRow = studentTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -359,17 +335,16 @@ public class StudentsView extends JFrame {
             return;
         }
 
-        // Se extraen los datos de la memoria y se suben al formulario
         Estudiante s = studentList.get(selectedRow);
         txtStudentId.setText(s.getCarnet());
-        txtStudentId.setEditable(false); // Se bloquea para no alterar la llave primaria
+        txtStudentId.setEditable(false); 
         txtFirstName.setText(s.getNombre());
         txtLastName.setText(s.getApellido());
         txtEmail.setText(s.getCorreo());
 
         isEditing = true;
         editingIndex = selectedRow;
-        btnSave.setText("Actualizar Estudiante"); // El botón de guardar cambia de función
+        btnSave.setText("Actualizar Estudiante");
     }
 
     private void deleteSelectedStudent() {
@@ -414,6 +389,6 @@ public class StudentsView extends JFrame {
         txtStudentId.setEditable(true);
         isEditing = false;
         editingIndex = -1;
-        btnSave.setText("Registrar Estudiante"); // Regresa a su estado original
+        btnSave.setText("Registrar Estudiante"); 
     }
 }

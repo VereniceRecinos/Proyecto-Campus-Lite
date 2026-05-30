@@ -35,8 +35,6 @@ public abstract class Evaluacion {
 	}
 
 	public abstract double puntajeObtenido();
-
-    public Object getNota() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+	
+	public abstract double getNota();
 }

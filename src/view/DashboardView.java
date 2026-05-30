@@ -1,30 +1,13 @@
 package view;
 
-import view.CoursesView;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class DashboardView extends JFrame {
-
+	
     // MENU
 	private JButton btnStudents;
 	private JButton btnCourses;
@@ -32,26 +15,37 @@ public class DashboardView extends JFrame {
 	private JButton btnInscripciones;
 	private JButton btnSalir;
 
-    // HEADER
-    private JButton btnTituloApp;
-    private JLabel lblUsuario;
+    // LISTAS MAESTRAS EN INGLÉS
+    private List<model.Estudiante> studentList;
+    private List<model.Curso> courseList;
+    private List<model.Inscripcion> enrollmentList;
+    private List<model.Evaluacion> listaEvaluaciones;
 
-    // TABLA
-    private JTable tablaLogs;
-    private DefaultTableModel modeloTabla;
-
+    // 1. CONSTRUCTOR PARA EL ARRANQUE DESDE EL MAIN
     public DashboardView() {
-
+        // ¡ESTO ERA LO QUE FALTABA! Inicializar las listas vacías
+        this.studentList = new ArrayList<>();
+        this.courseList = new ArrayList<>();
+        this.enrollmentList = new ArrayList<>();
+        
         configurarVentana();
         inicializarComponentes();
         agregarEventos();
     }
 
-    /* =========================================
-     * CONFIGURACIÓN VENTANA
-     * ========================================= */
-    private void configurarVentana() {
+    // 2. CONSTRUCTOR PARA CUANDO REGRESAS DE OTRA PANTALLA
+    public DashboardView(List<model.Estudiante> s, List<model.Curso> c, List<model.Inscripcion> i, List<model.Evaluacion> e) {
+    	this.studentList = s;
+        this.courseList = c;
+        this.enrollmentList = i;
+        this.listaEvaluaciones = (e != null) ? e : new ArrayList<>();
+        
+        configurarVentana();
+        inicializarComponentes();
+        agregarEventos();
+    }
 
+    private void configurarVentana() {
         setTitle("EduManager Desktop");
         setSize(1365, 768);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,14 +53,8 @@ public class DashboardView extends JFrame {
         setLayout(new BorderLayout());
     }
 
-    /* =========================================
-     * COMPONENTES
-     * ========================================= */
     private void inicializarComponentes() {
-
-    	/* =========================================
-    	 * HEADER SUPERIOR
-    	 * ========================================= */
+    	// HEADER SUPERIOR
     	JPanel panelHeader = new JPanel();
     	panelHeader.setLayout(new BoxLayout(panelHeader, BoxLayout.Y_AXIS));
     	panelHeader.setBackground(new Color(10, 60, 80));
@@ -82,12 +70,9 @@ public class DashboardView extends JFrame {
 
     	panelHeader.add(lblTituloSistema);
     	panelHeader.add(lblSubtituloSistema);
-
     	add(panelHeader, BorderLayout.NORTH);
 
-    	/* =========================================
-    	 * MENU LATERAL
-    	 * ========================================= */
+    	// MENU LATERAL
     	JPanel panelMenu = new JPanel();
     	panelMenu.setBackground(new Color(15, 70, 90));
     	panelMenu.setPreferredSize(new Dimension(230, 0));
@@ -102,23 +87,17 @@ public class DashboardView extends JFrame {
 
     	panelMenu.add(btnStudents);
     	panelMenu.add(Box.createRigidArea(new Dimension(0, 15)));
-
     	panelMenu.add(btnCourses);
     	panelMenu.add(Box.createRigidArea(new Dimension(0, 15)));
-
     	panelMenu.add(btnEvaluaciones);
     	panelMenu.add(Box.createRigidArea(new Dimension(0, 15)));
-
     	panelMenu.add(btnInscripciones);
     	panelMenu.add(Box.createRigidArea(new Dimension(0, 15)));
-
     	panelMenu.add(btnSalir);
 
     	add(panelMenu, BorderLayout.WEST);
 
-    	/* =========================================
-    	 * PANEL CENTRAL
-    	 * ========================================= */
+    	// PANEL CENTRAL
     	JPanel panelCentral = new JPanel();
     	panelCentral.setBackground(new Color(245, 245, 245));
     	panelCentral.setLayout(new GridLayout(1, 1));
@@ -143,127 +122,47 @@ public class DashboardView extends JFrame {
     	panelBienvenida.add(Box.createVerticalGlue());
 
     	panelCentral.add(panelBienvenida);
-
     	add(panelCentral, BorderLayout.CENTER);
-    	
     }
     
-    /* =========================================
-	 * BOTÓN MENU
-	 * ========================================= */
 	private JButton crearBotonMenu(String texto) {
-
 	    JButton boton = new JButton(texto);
-
 	    boton.setMaximumSize(new Dimension(190, 60));
 	    boton.setPreferredSize(new Dimension(190, 60));
-
 	    boton.setHorizontalAlignment(SwingConstants.CENTER);
-
 	    boton.setFocusPainted(false);
-
 	    boton.setBackground(new Color(40, 140, 220));
 	    boton.setForeground(Color.BLACK);
-
 	    boton.setFont(new Font("Arial", Font.BOLD, 18));
-
 	    boton.setBorder(BorderFactory.createEmptyBorder());
-
 	    return boton;
 	}
 
-    /* =========================================
-     * CARD
-     * ========================================= */
-    private JPanel crearCard(String numero, String texto, Color color) {
-
-        JPanel card = new JPanel();
-        card.setBackground(color);
-        card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-
-        JLabel lblNumero = new JLabel(numero);
-        lblNumero.setAlignmentX(CENTER_ALIGNMENT);
-        lblNumero.setFont(new Font("Arial", Font.BOLD, 28));
-
-        JLabel lblTexto = new JLabel(texto);
-        lblTexto.setAlignmentX(CENTER_ALIGNMENT);
-        lblTexto.setFont(new Font("Arial", Font.BOLD, 12));
-
-        card.add(Box.createVerticalGlue());
-        card.add(lblNumero);
-        card.add(Box.createRigidArea(new Dimension(0, 10)));
-        card.add(lblTexto);
-        card.add(Box.createVerticalGlue());
-
-        return card;
-    }
-
-    /* =========================================
-     * EVENTOS
-     * ========================================= */
     private void agregarEventos() {
-
-        btnStudents.addActionListener (e -> {
-            
-            StudentsView ventana = new StudentsView();
-            ventana.setVisible(true);
-            
+        btnStudents.addActionListener(e -> {
+            StudentsView window = new StudentsView(studentList, courseList, enrollmentList);
+            window.setVisible(true);
             dispose();
         });
 
         btnCourses.addActionListener(e -> {
-
-            CoursesView ventana = new CoursesView();
-            ventana.setVisible(true);
-
-            dispose(); // cierra Dashboard si se quiere cambiar de pantalla
-        });
-
-        btnEvaluaciones.addActionListener(e -> {
-
-            EvaluacionesView ventana = new EvaluacionesView();
-            ventana.setVisible(true);
-           
+            CoursesView window = new CoursesView(studentList, courseList, enrollmentList);
+            window.setVisible(true);
             dispose();
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Módulo Evaluaciones."
-            );
         });
 
         btnInscripciones.addActionListener(e -> {
-            InscripcionView ventana = new InscripcionView();
-            ventana.setVisible(true);
+            InscripcionView window = new InscripcionView(studentList, courseList, enrollmentList);
+            window.setVisible(true);
+            dispose();
+        });
+
+        btnEvaluaciones.addActionListener(e -> {
+        	EvaluacionesView window = new EvaluacionesView(studentList, courseList, enrollmentList, listaEvaluaciones);
+            window.setVisible(true);
             dispose();
         });
         
-        btnSalir.addActionListener(e -> {
-
-            System.exit(0);
-        });
-    }
-
-    /* =========================================
-     * MAIN
-     * ========================================= */
-    public static void main(String[] args) {
-
-        try {
-
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName()
-            );
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-
-        java.awt.EventQueue.invokeLater(() -> {
-
-            new DashboardView().setVisible(true);
-        });
+        btnSalir.addActionListener(e -> System.exit(0));
     }
 }

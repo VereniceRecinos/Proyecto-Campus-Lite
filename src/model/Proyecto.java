@@ -28,4 +28,8 @@ public class Proyecto extends Evaluacion {
 
         	return notaFinal * (ponderacion / 100);
     }
+        	@Override
+        	public double getNota() {
+        	    return this.nota;
+        	}
 }

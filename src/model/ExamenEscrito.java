@@ -26,4 +26,9 @@ public class ExamenEscrito extends Evaluacion {
 
         return nota * (ponderacion / 100);
     }
+    
+    @Override
+    public double getNota() {
+        return this.nota;
+    }
 }

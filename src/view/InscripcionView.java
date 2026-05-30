@@ -9,14 +9,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class InscripcionView extends JFrame {
 
-    // Components
-    private JComboBox<String> comboStudents;
-    private JComboBox<String> comboCourses;
+    // Componentes Unificados
+    private JComboBox<String> cmbStudents;
+    private JComboBox<String> cmbCourses;
     private JTextField txtDate;
     
     private JButton btnEnroll;
@@ -28,21 +27,23 @@ public class InscripcionView extends JFrame {
     private JTable enrollmentTable;
     private DefaultTableModel tableModel;
 
-    // Data Lists
+    // Listas de Datos Reales
+    private List<Estudiante> studentList; 
+    private List<Curso> courseList;       
     private List<Inscripcion> enrollmentList;
-    private List<Estudiante> studentList; // Simulación de datos existentes
-    private List<Curso> courseList;       // Simulación de datos existentes
-
-    public InscripcionView() {
+    
+    // Constructor con parámetros
+    public InscripcionView(List<Estudiante> studentList, List<Curso> courseList, List<Inscripcion> enrollmentList) {
+        this.studentList = studentList;
+        this.courseList = courseList;
+        this.enrollmentList = enrollmentList;
+        
         // 1. CONFIGURACIÓN VENTANA
         setTitle("EDUMANAGER DESKTOP - v2.4");
         setSize(1050, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-
-        enrollmentList = new ArrayList<>();
-        mockData(); // Cargar datos de prueba para estudiantes y cursos
 
         // PANEL PRINCIPAL
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -99,17 +100,15 @@ public class InscripcionView extends JFrame {
         gbc.gridy++;
         formPanel.add(createWhiteLabel("Seleccionar Estudiante:"), gbc);
         gbc.gridy++;
-        comboStudents = new JComboBox<>();
-        fillStudentCombo();
-        formPanel.add(comboStudents, gbc);
+        cmbStudents = new JComboBox<>();
+        formPanel.add(cmbStudents, gbc);
 
         // --- SELECCIONAR CURSO ---
         gbc.gridy++;
         formPanel.add(createWhiteLabel("Seleccionar Curso:"), gbc);
         gbc.gridy++;
-        comboCourses = new JComboBox<>();
-        fillCourseCombo();
-        formPanel.add(comboCourses, gbc);
+        cmbCourses = new JComboBox<>();
+        formPanel.add(cmbCourses, gbc);
 
         // --- FECHA ---
         gbc.gridy++;
@@ -144,11 +143,8 @@ public class InscripcionView extends JFrame {
         tablePanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(220, 220, 220)),
                 BorderFactory.createEmptyBorder(20, 20, 20, 20)
-                
-                
         ));
         
-
         JLabel lblTableTitle = new JLabel("Historial de Inscripciones");
         lblTableTitle.setFont(new Font("Arial", Font.BOLD, 24));
         lblTableTitle.setForeground(new Color(10, 60, 80));
@@ -190,16 +186,41 @@ public class InscripcionView extends JFrame {
         // EVENTOS
         btnEnroll.addActionListener(e -> enrollStudent());
         btnClear.addActionListener(e -> clearForm());
-        btnBack.addActionListener(e -> { new DashboardView().setVisible(true); dispose(); });
         btnExit.addActionListener(e -> System.exit(0));
         btnDelete.addActionListener(e -> deleteEnrollment());
+        
+        btnBack.addActionListener(e -> { 
+            // Devuelve las listas al menú para no perder la info
+            new DashboardView(this.studentList, this.courseList, this.enrollmentList, null).setVisible(true); 
+            dispose(); 
+        });
+        
+        // Cargar los datos y la tabla al abrir la ventana
+        loadComboData();
+        updateTable();
+    }
+    
+    private void loadComboData() {
+        cmbStudents.removeAllItems();
+        cmbCourses.removeAllItems();
+
+        cmbStudents.addItem("-- Seleccione un Estudiante --");
+        cmbCourses.addItem("-- Seleccione un Curso --");
+
+        for (Estudiante student : studentList) {
+            cmbStudents.addItem(student.getNombre() + " " + student.getApellido() + " (" + student.getCarnet() + ")");
+        }
+
+        for (Curso course : courseList) {
+            cmbCourses.addItem(course.getNombre() + " (" + course.getCodigo() + ")");
+        }
     }
 
     // --- LÓGICA ---
 
     private void enrollStudent() {
-        int studentIdx = comboStudents.getSelectedIndex();
-        int courseIdx = comboCourses.getSelectedIndex();
+        int studentIdx = cmbStudents.getSelectedIndex();
+        int courseIdx = cmbCourses.getSelectedIndex();
         String date = txtDate.getText().trim();
 
         if (studentIdx == 0 || courseIdx == 0 || date.isEmpty()) {
@@ -210,7 +231,6 @@ public class InscripcionView extends JFrame {
         Estudiante s = studentList.get(studentIdx - 1);
         Curso c = courseList.get(courseIdx - 1);
 
-        // Validar si ya está inscrito en ese curso
         for (Inscripcion ins : enrollmentList) {
             if (ins.getEstudiante().getCarnet().equals(s.getCarnet()) && ins.getCurso().getCodigo().equals(c.getCodigo())) {
                 JOptionPane.showMessageDialog(this, "Este estudiante ya está inscrito en este curso.", "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -250,13 +270,12 @@ public class InscripcionView extends JFrame {
     }
 
     private void clearForm() {
-        comboStudents.setSelectedIndex(0);
-        comboCourses.setSelectedIndex(0);
+        cmbStudents.setSelectedIndex(0);
+        cmbCourses.setSelectedIndex(0);
         txtDate.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 
     // --- HELPERS UI ---
-
     private JLabel createWhiteLabel(String text) {
         JLabel label = new JLabel(text);
         label.setForeground(Color.WHITE);
@@ -271,29 +290,5 @@ public class InscripcionView extends JFrame {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setFocusPainted(false);
         return btn;
-    }
-
-    private void fillStudentCombo() {
-        comboStudents.addItem("-- Seleccionar Estudiante --");
-        for (Estudiante s : studentList) {
-            comboStudents.addItem(s.getNombre() + " - " + s.getCarnet());
-        }
-    }
-
-    private void fillCourseCombo() {
-        comboCourses.addItem("-- Seleccionar Curso --");
-        for (Curso c : courseList) {
-            comboCourses.addItem(c.getNombre() + " - " + c.getCodigo());
-        }
-    }
-
-    private void mockData() {
-        studentList = new ArrayList<>();
-        studentList.add(new Estudiante("2024-001", "Juan Pérez", "Pérez", "juan@gmail.com"));
-        studentList.add(new Estudiante("2024-002", "María López", "López", "maria@gmail.com"));
-
-        courseList = new ArrayList<>();
-        courseList.add(new Curso("PROG1", "Programación I", 30));
-        courseList.add(new Curso("DB1", "Bases de Datos I", 25));
     }
 }

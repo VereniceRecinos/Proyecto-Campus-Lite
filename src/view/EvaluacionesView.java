@@ -1,7 +1,10 @@
 package view;
 
+import model.Curso;
+import model.Estudiante;
 import model.Evaluacion;
 import model.ExamenEscrito;
+import model.Inscripcion;
 import model.Laboratorio;
 import model.Proyecto;
 
@@ -17,9 +20,7 @@ public class EvaluacionesView extends JFrame {
     private JTextField txtNombreEvaluacion;
     private JTextField txtPonderacion;
     private JTextField txtNota;
-
     private JComboBox<String> cmbTipoEvaluacion;
-
     private JButton btnRegistrar;
     private JButton btnLimpiar;
     private JButton btnVolver;
@@ -28,23 +29,31 @@ public class EvaluacionesView extends JFrame {
     private JTable tablaEvaluaciones;
     private DefaultTableModel modeloTabla;
 
-    // LISTA
+    // LISTAS
     private List<Evaluacion> listaEvaluaciones;
-
-    public EvaluacionesView() {
-
-        listaEvaluaciones = new ArrayList<>();
-
+    private List<Estudiante> studentList;
+    private List<Curso> courseList;
+    private List<Inscripcion> enrollmentList;
+    
+    
+    // Constructor principal que recibe los datos
+    public EvaluacionesView(List<Estudiante> s, List<Curso> c, List<Inscripcion> i, List<Evaluacion> e) {
+    	this.studentList = s;
+        this.courseList = c;
+        this.enrollmentList = i;
+        this.listaEvaluaciones = e;
+        
+        
         configurarVentana();
-        inicializarComponentes();
+        inicializarComponentes(); 
         agregarEventos();
+        cargarDatosTabla();
     }
 
     /* =========================================
      * CONFIGURACIÓN
      * ========================================= */
     private void configurarVentana() {
-
         setTitle("EDUMANAGER DESKTOP - Evaluaciones");
         setSize(1100, 650);
         setLocationRelativeTo(null);
@@ -56,93 +65,45 @@ public class EvaluacionesView extends JFrame {
      * COMPONENTES
      * ========================================= */
     private void inicializarComponentes() {
-
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(new Color(245, 247, 250));
-        panelPrincipal.setBorder(
-                BorderFactory.createEmptyBorder(25, 25, 25, 25)
-        );
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
 
-        /* =========================================
-         * TÍTULO
-         * ========================================= */
+        /* TÍTULO */
         JLabel lblTitulo = new JLabel("Gestión de Evaluaciones");
-
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 34));
-
         lblTitulo.setForeground(new Color(10, 60, 80));
-
-        lblTitulo.setBorder(
-                BorderFactory.createEmptyBorder(0, 10, 25, 0)
-        );
-
+        lblTitulo.setBorder(BorderFactory.createEmptyBorder(0, 10, 25, 0));
         panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
 
-        /* =========================================
-         * CONTENIDO
-         * ========================================= */
+        /* CONTENIDO */
         JPanel panelContenido = new JPanel(new BorderLayout(25, 0));
-
         panelContenido.setBackground(new Color(245, 247, 250));
 
-        /* =========================================
-         * FORMULARIO
-         * ========================================= */
+        /* FORMULARIO */
         JPanel panelFormulario = new JPanel();
-
         panelFormulario.setBackground(new Color(15, 70, 90));
-
         panelFormulario.setLayout(new GridBagLayout());
-
-        panelFormulario.setBorder(
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(
-                                new Color(10, 60, 80), 2
-                        ),
-                        BorderFactory.createEmptyBorder(
-                                25, 25, 25, 25
-                        )
-                )
-        );
+        panelFormulario.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(10, 60, 80), 2),
+                BorderFactory.createEmptyBorder(25, 25, 25, 25)
+        ));
 
         GridBagConstraints gbc = new GridBagConstraints();
-
         gbc.insets = new Insets(10, 10, 10, 10);
-
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
         gbc.weightx = 1;
 
-        /* =========================================
-         * TITULO FORM
-         * ========================================= */
         JPanel panelTituloFormulario = new JPanel();
-
-        panelTituloFormulario.setLayout(
-                new BoxLayout(
-                        panelTituloFormulario,
-                        BoxLayout.Y_AXIS
-                )
-        );
-
-        panelTituloFormulario.setBackground(
-                new Color(15, 70, 90)
-        );
+        panelTituloFormulario.setLayout(new BoxLayout(panelTituloFormulario, BoxLayout.Y_AXIS));
+        panelTituloFormulario.setBackground(new Color(15, 70, 90));
 
         JLabel lblRegistrar = new JLabel("Registrar");
-
-        lblRegistrar.setFont(
-                new Font("Arial", Font.BOLD, 28)
-        );
-
+        lblRegistrar.setFont(new Font("Arial", Font.BOLD, 28));
         lblRegistrar.setForeground(Color.WHITE);
 
         JLabel lblEvaluacion = new JLabel("Evaluación");
-
-        lblEvaluacion.setFont(
-                new Font("Arial", Font.BOLD, 28)
-        );
-
+        lblEvaluacion.setFont(new Font("Arial", Font.BOLD, 28));
         lblEvaluacion.setForeground(Color.WHITE);
 
         panelTituloFormulario.add(lblRegistrar);
@@ -150,279 +111,126 @@ public class EvaluacionesView extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-
         panelFormulario.add(panelTituloFormulario, gbc);
 
-        /* =========================================
-         * NOMBRE
-         * ========================================= */
+        /* NOMBRE */
         gbc.gridy++;
-
         JLabel lblNombre = new JLabel("Nombre Evaluación");
-
-        lblNombre.setFont(
-                new Font("Arial", Font.BOLD, 16)
-        );
-
+        lblNombre.setFont(new Font("Arial", Font.BOLD, 16));
         lblNombre.setForeground(Color.WHITE);
-
         panelFormulario.add(lblNombre, gbc);
 
         gbc.gridy++;
-
         txtNombreEvaluacion = new JTextField();
-
-        txtNombreEvaluacion.setPreferredSize(
-                new Dimension(180, 35)
-        );
-
-        txtNombreEvaluacion.setFont(
-                new Font("Arial", Font.PLAIN, 16)
-        );
-
+        txtNombreEvaluacion.setPreferredSize(new Dimension(180, 35));
+        txtNombreEvaluacion.setFont(new Font("Arial", Font.PLAIN, 16));
         panelFormulario.add(txtNombreEvaluacion, gbc);
 
-        /* =========================================
-         * TIPO
-         * ========================================= */
+        /* TIPO */
         gbc.gridy++;
-
         JLabel lblTipo = new JLabel("Tipo de Evaluación");
-
-        lblTipo.setFont(
-                new Font("Arial", Font.BOLD, 16)
-        );
-
+        lblTipo.setFont(new Font("Arial", Font.BOLD, 16));
         lblTipo.setForeground(Color.WHITE);
-
         panelFormulario.add(lblTipo, gbc);
 
         gbc.gridy++;
-
         cmbTipoEvaluacion = new JComboBox<>();
-
         cmbTipoEvaluacion.addItem("Examen Escrito");
         cmbTipoEvaluacion.addItem("Laboratorio");
         cmbTipoEvaluacion.addItem("Proyecto");
-
-        cmbTipoEvaluacion.setFont(
-                new Font("Arial", Font.PLAIN, 16)
-        );
-
+        cmbTipoEvaluacion.setFont(new Font("Arial", Font.PLAIN, 16));
         panelFormulario.add(cmbTipoEvaluacion, gbc);
 
-        /* =========================================
-         * PONDERACIÓN
-         * ========================================= */
+        /* PONDERACIÓN */
         gbc.gridy++;
-
         JLabel lblPonderacion = new JLabel("Ponderación (%)");
-
-        lblPonderacion.setFont(
-                new Font("Arial", Font.BOLD, 16)
-        );
-
+        lblPonderacion.setFont(new Font("Arial", Font.BOLD, 16));
         lblPonderacion.setForeground(Color.WHITE);
-
         panelFormulario.add(lblPonderacion, gbc);
 
         gbc.gridy++;
-
         txtPonderacion = new JTextField();
-
-        txtPonderacion.setPreferredSize(
-                new Dimension(180, 35)
-        );
-
-        txtPonderacion.setFont(
-                new Font("Arial", Font.PLAIN, 16)
-        );
-
+        txtPonderacion.setPreferredSize(new Dimension(180, 35));
+        txtPonderacion.setFont(new Font("Arial", Font.PLAIN, 16));
         panelFormulario.add(txtPonderacion, gbc);
 
-        /* =========================================
-         * NOTA
-         * ========================================= */
+        /* NOTA */
         gbc.gridy++;
-
         JLabel lblNota = new JLabel("Nota");
-
-        lblNota.setFont(
-                new Font("Arial", Font.BOLD, 16)
-        );
-
+        lblNota.setFont(new Font("Arial", Font.BOLD, 16));
         lblNota.setForeground(Color.WHITE);
-
         panelFormulario.add(lblNota, gbc);
 
         gbc.gridy++;
-
         txtNota = new JTextField();
-
-        txtNota.setPreferredSize(
-                new Dimension(180, 35)
-        );
-
-        txtNota.setFont(
-                new Font("Arial", Font.PLAIN, 16)
-        );
-
+        txtNota.setPreferredSize(new Dimension(180, 35));
+        txtNota.setFont(new Font("Arial", Font.PLAIN, 16));
         panelFormulario.add(txtNota, gbc);
 
-        /* =========================================
-         * BOTONES
-         * ========================================= */
+        /* BOTONES */
         gbc.gridy++;
-
         btnRegistrar = new JButton("Registrar Evaluación");
-
         btnLimpiar = new JButton("Limpiar");
-
         btnVolver = new JButton("Volver al Menú");
 
-        JButton[] botones = {
-                btnRegistrar,
-                btnLimpiar,
-                btnVolver
-        };
+        JButton[] botones = {btnRegistrar, btnLimpiar, btnVolver};
 
         for (JButton boton : botones) {
-
             boton.setFocusPainted(false);
-
-            boton.setFont(
-                    new Font("Arial", Font.BOLD, 15)
-            );
-
-            boton.setPreferredSize(
-                    new Dimension(200, 42)
-            );
-
-            boton.setCursor(
-                    new Cursor(Cursor.HAND_CURSOR)
-            );
+            boton.setFont(new Font("Arial", Font.BOLD, 15));
+            boton.setPreferredSize(new Dimension(200, 42));
+            boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
             if (boton == btnRegistrar) {
-
-                boton.setBackground(
-                        new Color(144, 238, 144)
-                );
-
+                boton.setBackground(new Color(144, 238, 144));
             } else if (boton == btnLimpiar) {
-
-                boton.setBackground(
-                        new Color(173, 216, 230)
-                );
-
+                boton.setBackground(new Color(173, 216, 230));
             } else {
-
-                boton.setBackground(
-                        new Color(211, 211, 211)
-                );
+                boton.setBackground(new Color(211, 211, 211));
             }
         }
 
-        JPanel panelBotones = new JPanel(
-                new GridLayout(3, 1, 0, 10)
-        );
-
-        panelBotones.setBackground(
-                new Color(15, 70, 90)
-        );
-
+        JPanel panelBotones = new JPanel(new GridLayout(3, 1, 0, 10));
+        panelBotones.setBackground(new Color(15, 70, 90));
         panelBotones.add(btnRegistrar);
         panelBotones.add(btnLimpiar);
         panelBotones.add(btnVolver);
-
         panelFormulario.add(panelBotones, gbc);
 
-        /* =========================================
-         * TABLA
-         * ========================================= */
+        /* TABLA */
         JPanel panelTabla = new JPanel(new BorderLayout());
-
         panelTabla.setBackground(Color.WHITE);
+        panelTabla.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220)),
+                BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
 
-        panelTabla.setBorder(
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(
-                                new Color(220, 220, 220)
-                        ),
-                        BorderFactory.createEmptyBorder(
-                                20, 20, 20, 20
-                        )
-                )
-        );
-
-        JLabel lblTabla = new JLabel(
-                "Evaluaciones Registradas"
-        );
-
-        lblTabla.setFont(
-                new Font("Arial", Font.BOLD, 24)
-        );
-
-        lblTabla.setForeground(
-                new Color(10, 60, 80)
-        );
-
+        JLabel lblTabla = new JLabel("Evaluaciones Registradas");
+        lblTabla.setFont(new Font("Arial", Font.BOLD, 24));
+        lblTabla.setForeground(new Color(10, 60, 80));
         panelTabla.add(lblTabla, BorderLayout.NORTH);
 
-        String[] columnas = {
-                "Nombre",
-                "Tipo",
-                "Ponderación",
-                "Nota",
-                "Puntaje Obtenido"
-        };
-
+        String[] columnas = {"Nombre", "Tipo", "Ponderación", "Nota", "Puntaje Obtenido"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
-
             @Override
-            public boolean isCellEditable(
-                    int row,
-                    int column
-            ) {
-
-                return false;
-            }
+            public boolean isCellEditable(int row, int column) { return false; }
         };
 
         tablaEvaluaciones = new JTable(modeloTabla);
-
         tablaEvaluaciones.setRowHeight(32);
+        tablaEvaluaciones.setFont(new Font("Arial", Font.PLAIN, 14));
+        tablaEvaluaciones.getTableHeader().setFont(new Font("Arial", Font.BOLD, 15));
+        
+        tablaEvaluaciones.getTableHeader().setReorderingAllowed(false);
 
-        tablaEvaluaciones.setFont(
-                new Font("Arial", Font.PLAIN, 14)
-        );
-
-        tablaEvaluaciones.getTableHeader().setFont(
-                new Font("Arial", Font.BOLD, 15)
-        );
-
-        JScrollPane scroll = new JScrollPane(
-                tablaEvaluaciones
-        );
-
-        scroll.setBorder(
-                BorderFactory.createEmptyBorder(
-                        15, 0, 0, 0
-                )
-        );
-
+        JScrollPane scroll = new JScrollPane(tablaEvaluaciones);
+        scroll.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
         panelTabla.add(scroll, BorderLayout.CENTER);
 
-        /* =========================================
-         * AGREGAR
-         * ========================================= */
-        panelFormulario.setPreferredSize(
-                new Dimension(350, 0)
-        );
-
+        /* AGREGAR PANELES */
+        panelFormulario.setPreferredSize(new Dimension(350, 0));
         panelContenido.add(panelFormulario, BorderLayout.WEST);
-
         panelContenido.add(panelTabla, BorderLayout.CENTER);
-
         panelPrincipal.add(panelContenido, BorderLayout.CENTER);
 
         add(panelPrincipal, BorderLayout.CENTER);
@@ -432,25 +240,22 @@ public class EvaluacionesView extends JFrame {
      * EVENTOS
      * ========================================= */
     private void agregarEventos() {
-
-        btnRegistrar.addActionListener(e -> {
-
-            registrarEvaluacion();
-            
-        });
-            
-        btnLimpiar.addActionListener(e -> {
-
-            limpiarCampos();
-        });
+    	// En tu método donde inicializas el botón de Evaluaciones
+    	btnRegistrar.addActionListener(e -> {
+    	    // Pasamos la lista que vive en el Dashboard al constructor
+    	    EvaluacionesView window = new EvaluacionesView(studentList, courseList, enrollmentList, listaEvaluaciones);
+    	    window.setVisible(true);
+    	    dispose();
+    	});
+        btnRegistrar.addActionListener(e -> registrarEvaluacion());
+        btnLimpiar.addActionListener(e -> limpiarCampos());
 
         btnVolver.addActionListener(e -> {
-
-            DashboardView dashboard = new DashboardView();
-
+            // DEVOLVEMOS LAS LISTAS AL MENÚ
+        	DashboardView dashboard = new DashboardView(studentList, courseList, enrollmentList, listaEvaluaciones);
             dashboard.setVisible(true);
-
             dispose();
+            
         });
     }
 
@@ -458,34 +263,13 @@ public class EvaluacionesView extends JFrame {
      * REGISTRAR
      * ========================================= */
     private void registrarEvaluacion() {
+        String nombre = txtNombreEvaluacion.getText().trim();
+        String tipo = cmbTipoEvaluacion.getSelectedItem().toString();
+        String ponderacionStr = txtPonderacion.getText().trim();
+        String notaStr = txtNota.getText().trim();
 
-        String nombre =
-                txtNombreEvaluacion.getText().trim();
-
-        String tipo =
-                cmbTipoEvaluacion
-                        .getSelectedItem()
-                        .toString();
-
-        String ponderacionStr =
-                txtPonderacion.getText().trim();
-
-        String notaStr =
-                txtNota.getText().trim();
-
-        if (
-                nombre.isEmpty()
-                        || ponderacionStr.isEmpty()
-                        || notaStr.isEmpty()
-        ) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Todos los campos son obligatorios.",
-                    "Campos Vacíos",    
-                    JOptionPane.WARNING_MESSAGE
-            );
-
+        if (nombre.isEmpty() || ponderacionStr.isEmpty() || notaStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Campos Vacíos", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -493,72 +277,28 @@ public class EvaluacionesView extends JFrame {
         double nota;
 
         try {
+            ponderacion = Double.parseDouble(ponderacionStr);
+            nota = Double.parseDouble(notaStr);
 
-            ponderacion =
-                    Double.parseDouble(ponderacionStr);
-
-            nota =
-                    Double.parseDouble(notaStr);
-
-            if (
-                    ponderacion <= 0
-                            || ponderacion > 100
-            ) {
-
+            if (ponderacion <= 0 || ponderacion > 100 || nota < 0 || nota > 100) {
                 throw new NumberFormatException();
             }
-
-            if (
-                    nota < 0
-                            || nota > 100
-            ) {
-
-                throw new NumberFormatException();
-            }
-
         } catch (NumberFormatException e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Ingrese datos válidos.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+            JOptionPane.showMessageDialog(this, "Ingrese datos válidos y que estén entre 0 y 100.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         Evaluacion evaluacion;
 
         switch (tipo) {
-
             case "Examen Escrito":
-
-                evaluacion = new ExamenEscrito(
-                        nombre,
-                        ponderacion,
-                        nota
-                );
-
+                evaluacion = new ExamenEscrito(nombre, ponderacion, nota);
                 break;
-
             case "Laboratorio":
-
-                evaluacion = new Laboratorio(
-                        nombre,
-                        ponderacion,
-                        nota
-                );
-
+                evaluacion = new Laboratorio(nombre, ponderacion, nota);
                 break;
-
             default:
-
-                evaluacion = new Proyecto(
-                        nombre,
-                        ponderacion,
-                        nota
-                );
+                evaluacion = new Proyecto(nombre, ponderacion, nota);
         }
 
         listaEvaluaciones.add(evaluacion);
@@ -568,33 +308,44 @@ public class EvaluacionesView extends JFrame {
                 tipo,
                 evaluacion.getPonderacion() + "%",
                 evaluacion.getNota(),
-                String.format(
-                        "%.2f",
-                        evaluacion.puntajeObtenido()
-                )
+                String.format("%.2f", evaluacion.puntajeObtenido())
         };
 
         modeloTabla.addRow(fila);
-
         limpiarCampos();
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Evaluación registrada correctamente."
-        );
+        JOptionPane.showMessageDialog(this, "Evaluación registrada correctamente.");
+    }
+    
+    private void cargarDatosTabla() {
+        // Limpiamos la tabla por si acaso
+        modeloTabla.setRowCount(0);
+        
+        // Recorremos la lista y agregamos cada elemento a la tabla
+        for (Evaluacion eval : listaEvaluaciones) {
+            Object[] fila = {
+                eval.getNombre(),
+                obtenerTipo(eval), // Método auxiliar que crearemos abajo
+                eval.getPonderacion() + "%",
+                eval.getNota(),
+                String.format("%.2f", eval.puntajeObtenido())
+            };
+            modeloTabla.addRow(fila);
+        }
     }
 
-    /* =========================================
-     * LIMPIAR
-     * ========================================= */
+    // Método auxiliar para saber qué tipo de evaluación es
+    private String obtenerTipo(Evaluacion eval) {
+        if (eval instanceof ExamenEscrito) return "Examen Escrito";
+        if (eval instanceof Laboratorio) return "Laboratorio";
+        return "Proyecto";
+    }
+
+     //LIMPIAR
+     
     private void limpiarCampos() {
-
         txtNombreEvaluacion.setText("");
-
         txtPonderacion.setText("");
-
         txtNota.setText("");
-
         cmbTipoEvaluacion.setSelectedIndex(0);
     }
 }
