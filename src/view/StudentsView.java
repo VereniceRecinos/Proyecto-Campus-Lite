@@ -1,8 +1,9 @@
 package view;
 
-import model.Estudiante;
-import model.Curso;
-import model.Inscripcion;
+import model.Student;
+import model.Course;
+import model.Enrollment;
+import model.Evaluation;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -28,17 +29,19 @@ public class StudentsView extends JFrame {
     private JTable studentTable;
     private DefaultTableModel tableModel;
     
-    private List<Estudiante> studentList;
-    private List<Curso> courseList;
-    private List<Inscripcion> enrollmentList;
+    private List<Student> studentList;
+    private List<Course> courseList;
+    private List<Enrollment> enrollmentList;
+    private List<Evaluation> evaluationList;
  
     private boolean isEditing = false;
     private int editingIndex = -1;
 
-    public StudentsView(List<Estudiante> studentList, List<Curso> courseList, List<Inscripcion> enrollmentList) {
+    public StudentsView(List<Student> studentList, List<Course> courseList, List<Enrollment> enrollmentList, List<Evaluation> evaluationList) {
     	this.studentList = studentList;
         this.courseList = courseList;
         this.enrollmentList = enrollmentList;
+        this.evaluationList = evaluationList;
         
         setTitle("EDUMANAGER DESKTOP - v2.4");
         setSize(1050, 650); 
@@ -202,7 +205,7 @@ public class StudentsView extends JFrame {
         btnDelete.addActionListener(e -> deleteSelectedStudent());
         
         btnBack.addActionListener(e -> {
-        	new DashboardView(studentList, courseList, enrollmentList, null).setVisible(true);
+        	new DashboardView(studentList, courseList, enrollmentList, evaluationList).setVisible(true);
             dispose();
         });
 
@@ -251,6 +254,9 @@ public class StudentsView extends JFrame {
     }
 
     private void generateEmail() {
+    	
+    	
+    	
         String firstName = txtFirstName.getText().trim();
         String lastName = txtLastName.getText().trim();
 
@@ -266,9 +272,9 @@ public class StudentsView extends JFrame {
         String firstLastName = lastNamesArray[0].toLowerCase();
 
         String baseEmail = initial + firstLastName;
-        String proposedEmail = baseEmail + "@gmail.com";
+        String proposedEmail = baseEmail + "@umg.edu.gt";
 
-        if (isEditing && studentList.get(editingIndex).getCorreo().equals(proposedEmail)) {
+        if (isEditing && studentList.get(editingIndex).getEmail().equals(proposedEmail)) {
              txtEmail.setText(proposedEmail);
              return;
         }
@@ -276,7 +282,7 @@ public class StudentsView extends JFrame {
         if (emailExists(proposedEmail)) {
             Random rand = new Random();
             int randomNum = rand.nextInt(900) + 100; 
-            proposedEmail = baseEmail + randomNum + "@gmail.com";
+            proposedEmail = baseEmail + randomNum + "@umg.edu.gt";
         }
 
         txtEmail.setText(proposedEmail);
@@ -285,7 +291,7 @@ public class StudentsView extends JFrame {
     private boolean emailExists(String email) {
         for (int i = 0; i < studentList.size(); i++) {
             if (isEditing && i == editingIndex) continue;
-            if (studentList.get(i).getCorreo().equals(email)) return true;
+            if (studentList.get(i).getEmail().equals(email)) return true;
         }
         return false;
     }
@@ -302,20 +308,20 @@ public class StudentsView extends JFrame {
         }
 
         if (isEditing) {
-            Estudiante s = studentList.get(editingIndex);
-            s.setNombre(firstName);
-            s.setApellido(lastName);
-            s.setCorreo(email);
+            Student s = studentList.get(editingIndex);
+            s.setFirstName(firstName);
+            s.setLastName(lastName);
+            s.setLastName(email);
             JOptionPane.showMessageDialog(this, "Estudiante actualizado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            for (Estudiante s : studentList) {
-                if (s.getCarnet().equals(studentId)) {
+            for (Student s : studentList) {
+                if (s.getStudentId().equals(studentId)) {
                     JOptionPane.showMessageDialog(this, "El carnet ya existe.", "Duplicado", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
             try {
-                Estudiante newStudent = new Estudiante(studentId, firstName, lastName, email);
+                Student newStudent = new Student(studentId, firstName, lastName, email);
                 studentList.add(newStudent);
                 JOptionPane.showMessageDialog(this, "Estudiante guardado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } catch (IllegalArgumentException ex) {
@@ -323,6 +329,8 @@ public class StudentsView extends JFrame {
                 return;
             }
         }
+        
+		utils.PersistenceManager.saveData(studentList, courseList, enrollmentList, evaluationList);
 
         updateStudentTable();
         clearForm();
@@ -335,12 +343,12 @@ public class StudentsView extends JFrame {
             return;
         }
 
-        Estudiante s = studentList.get(selectedRow);
-        txtStudentId.setText(s.getCarnet());
+        Student s = studentList.get(selectedRow);
+        txtStudentId.setText(s.getStudentId());
         txtStudentId.setEditable(false); 
-        txtFirstName.setText(s.getNombre());
-        txtLastName.setText(s.getApellido());
-        txtEmail.setText(s.getCorreo());
+        txtFirstName.setText(s.getFirstName());
+        txtLastName.setText(s.getLastName());
+        txtEmail.setText(s.getEmail());
 
         isEditing = true;
         editingIndex = selectedRow;
@@ -353,6 +361,8 @@ public class StudentsView extends JFrame {
             JOptionPane.showMessageDialog(this, "Seleccione un estudiante de la tabla para eliminar.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        
+        utils.PersistenceManager.saveData(studentList, courseList, enrollmentList, evaluationList);
 
         int confirm = JOptionPane.showConfirmDialog(this, "¿Está seguro de eliminar este registro?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
@@ -365,13 +375,13 @@ public class StudentsView extends JFrame {
     private void updateStudentTable() {
         tableModel.setRowCount(0);
         int index = 1;
-        for (Estudiante s : studentList) {
+        for (Student s : studentList) {
             Object[] row = {
                 String.format("%03d", index++),
-                s.getCarnet(),
-                s.getNombre(),
-                s.getApellido(),
-                s.getCorreo()
+                s.getStudentId(),
+                s.getFirstName(),
+                s.getLastName(),
+                s.getEmail()
             };
             tableModel.addRow(row);
         }

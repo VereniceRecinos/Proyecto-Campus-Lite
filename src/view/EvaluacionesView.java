@@ -1,12 +1,12 @@
 package view;
 
-import model.Curso;
-import model.Estudiante;
-import model.Evaluacion;
-import model.ExamenEscrito;
-import model.Inscripcion;
-import model.Laboratorio;
-import model.Proyecto;
+import model.Course;
+import model.Student;
+import model.Evaluation;
+import model.WrittenExam;
+import model.Enrollment;
+import model.Laboratory;
+import model.Project;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -30,18 +30,18 @@ public class EvaluacionesView extends JFrame {
     private DefaultTableModel modeloTabla;
 
     // LISTAS
-    private List<Evaluacion> listaEvaluaciones;
-    private List<Estudiante> studentList;
-    private List<Curso> courseList;
-    private List<Inscripcion> enrollmentList;
+    private List<Student> studentList;
+    private List<Course> courseList;
+    private List<Enrollment> enrollmentList;
+    private List<Evaluation> evaluationList;
     
     
     // Constructor principal que recibe los datos
-    public EvaluacionesView(List<Estudiante> s, List<Curso> c, List<Inscripcion> i, List<Evaluacion> e) {
-    	this.studentList = s;
-        this.courseList = c;
-        this.enrollmentList = i;
-        this.listaEvaluaciones = e;
+    public EvaluacionesView(List<Student> studentList, List<Course> courseList, List<Enrollment> enrollmentList, List<Evaluation> evaluationList) {
+    	this.studentList = studentList;
+        this.courseList = courseList;
+        this.enrollmentList = enrollmentList;
+        this.evaluationList = evaluationList;
         
         
         configurarVentana();
@@ -243,7 +243,7 @@ public class EvaluacionesView extends JFrame {
     	// En tu método donde inicializas el botón de Evaluaciones
     	btnRegistrar.addActionListener(e -> {
     	    // Pasamos la lista que vive en el Dashboard al constructor
-    	    EvaluacionesView window = new EvaluacionesView(studentList, courseList, enrollmentList, listaEvaluaciones);
+    	    EvaluacionesView window = new EvaluacionesView(studentList, courseList, enrollmentList, evaluationList);
     	    window.setVisible(true);
     	    dispose();
     	});
@@ -252,7 +252,7 @@ public class EvaluacionesView extends JFrame {
 
         btnVolver.addActionListener(e -> {
             // DEVOLVEMOS LAS LISTAS AL MENÚ
-        	DashboardView dashboard = new DashboardView(studentList, courseList, enrollmentList, listaEvaluaciones);
+        	DashboardView dashboard = new DashboardView(studentList, courseList, enrollmentList, evaluationList);
             dashboard.setVisible(true);
             dispose();
             
@@ -288,27 +288,29 @@ public class EvaluacionesView extends JFrame {
             return;
         }
 
-        Evaluacion evaluacion;
+        Evaluation evaluacion;
 
         switch (tipo) {
             case "Examen Escrito":
-                evaluacion = new ExamenEscrito(nombre, ponderacion, nota);
+                evaluacion = new WrittenExam(nombre, ponderacion, nota);
                 break;
             case "Laboratorio":
-                evaluacion = new Laboratorio(nombre, ponderacion, nota);
+                evaluacion = new Laboratory(nombre, ponderacion, nota);
                 break;
             default:
-                evaluacion = new Proyecto(nombre, ponderacion, nota);
+                evaluacion = new Project(nombre, ponderacion, nota);
         }
 
-        listaEvaluaciones.add(evaluacion);
+        evaluationList.add(evaluacion);
+        
+        utils.PersistenceManager.saveData(studentList, courseList, enrollmentList, evaluationList);
 
         Object[] fila = {
-                evaluacion.getNombre(),
+                evaluacion.getName(),
                 tipo,
-                evaluacion.getPonderacion() + "%",
-                evaluacion.getNota(),
-                String.format("%.2f", evaluacion.puntajeObtenido())
+                evaluacion.getWeight() + "%",
+                evaluacion.getWeight(),
+                String.format("%.2f", evaluacion.getObtainedScore())
         };
 
         modeloTabla.addRow(fila);
@@ -321,22 +323,22 @@ public class EvaluacionesView extends JFrame {
         modeloTabla.setRowCount(0);
         
         // Recorremos la lista y agregamos cada elemento a la tabla
-        for (Evaluacion eval : listaEvaluaciones) {
+        for (Evaluation eval : evaluationList) {
             Object[] fila = {
-                eval.getNombre(),
+                eval.getName(),
                 obtenerTipo(eval), // Método auxiliar que crearemos abajo
-                eval.getPonderacion() + "%",
-                eval.getNota(),
-                String.format("%.2f", eval.puntajeObtenido())
+                eval.getWeight() + "%",
+                eval.getWeight(),
+                String.format("%.2f", eval.getObtainedScore())
             };
             modeloTabla.addRow(fila);
         }
     }
 
     // Método auxiliar para saber qué tipo de evaluación es
-    private String obtenerTipo(Evaluacion eval) {
-        if (eval instanceof ExamenEscrito) return "Examen Escrito";
-        if (eval instanceof Laboratorio) return "Laboratorio";
+    private String obtenerTipo(Evaluation eval) {
+        if (eval instanceof WrittenExam) return "Examen Escrito";
+        if (eval instanceof Laboratory) return "Laboratorio";
         return "Proyecto";
     }
 

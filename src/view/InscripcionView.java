@@ -1,8 +1,9 @@
 package view;
 
-import model.Estudiante;
-import model.Curso;
-import model.Inscripcion;
+import model.Student;
+import model.Course;
+import model.Enrollment;
+import model.Evaluation;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -28,15 +29,18 @@ public class InscripcionView extends JFrame {
     private DefaultTableModel tableModel;
 
     // Listas de Datos Reales
-    private List<Estudiante> studentList; 
-    private List<Curso> courseList;       
-    private List<Inscripcion> enrollmentList;
+    private List<Student> studentList; 
+    private List<Course> courseList;       
+    private List<Enrollment> enrollmentList;
+    private List<Evaluation> evaluationList;
     
     // Constructor con parámetros
-    public InscripcionView(List<Estudiante> studentList, List<Curso> courseList, List<Inscripcion> enrollmentList) {
+    
+    public InscripcionView(List<Student> studentList, List<Course> courseList, List<Enrollment> enrollmentList, List<Evaluation> evaluationList) {
         this.studentList = studentList;
         this.courseList = courseList;
         this.enrollmentList = enrollmentList;
+        this.evaluationList = evaluationList;
         
         // 1. CONFIGURACIÓN VENTANA
         setTitle("EDUMANAGER DESKTOP - v2.4");
@@ -207,12 +211,12 @@ public class InscripcionView extends JFrame {
         cmbStudents.addItem("-- Seleccione un Estudiante --");
         cmbCourses.addItem("-- Seleccione un Curso --");
 
-        for (Estudiante student : studentList) {
-            cmbStudents.addItem(student.getNombre() + " " + student.getApellido() + " (" + student.getCarnet() + ")");
+        for (Student student : studentList) {
+            cmbStudents.addItem(student.getFirstName() + " " + student.getLastName() + " (" + student.getStudentId() + ")");
         }
 
-        for (Curso course : courseList) {
-            cmbCourses.addItem(course.getNombre() + " (" + course.getCodigo() + ")");
+        for (Course course : courseList) {
+            cmbCourses.addItem(course.getName() + " (" + course.getCode() + ")");
         }
     }
 
@@ -228,18 +232,21 @@ public class InscripcionView extends JFrame {
             return;
         }
 
-        Estudiante s = studentList.get(studentIdx - 1);
-        Curso c = courseList.get(courseIdx - 1);
+        Student s = studentList.get(studentIdx - 1);
+        Course c = courseList.get(courseIdx - 1);
 
-        for (Inscripcion ins : enrollmentList) {
-            if (ins.getEstudiante().getCarnet().equals(s.getCarnet()) && ins.getCurso().getCodigo().equals(c.getCodigo())) {
+        for (Enrollment ins : enrollmentList) {
+            if (ins.getStudent().getStudentId().equals(s.getStudentId()) && ins.getCourse().getCode().equals(c.getCode())) {
                 JOptionPane.showMessageDialog(this, "Este estudiante ya está inscrito en este curso.", "Aviso", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
 
-        Inscripcion nueva = new Inscripcion(s, c, date);
+        Enrollment nueva = new Enrollment(s, c, date);
         enrollmentList.add(nueva);
+        
+        utils.PersistenceManager.saveData(studentList, courseList, enrollmentList, evaluationList);
+        
         updateTable();
         clearForm();
         JOptionPane.showMessageDialog(this, "¡Inscripción exitosa!");
@@ -252,18 +259,21 @@ public class InscripcionView extends JFrame {
             return;
         }
         enrollmentList.remove(row);
+        
+        utils.PersistenceManager.saveData(studentList, courseList, enrollmentList, evaluationList);
+        
         updateTable();
     }
 
     private void updateTable() {
         tableModel.setRowCount(0);
         int i = 1;
-        for (Inscripcion ins : enrollmentList) {
+        for (Enrollment ins : enrollmentList) {
             Object[] row = {
                 String.format("%03d", i++),
-                ins.getEstudiante().getNombre() + " (" + ins.getEstudiante().getCarnet() + ")",
-                ins.getCurso().getNombre() + " (" + ins.getCurso().getCodigo() + ")",
-                ins.getFechaInscripcion()
+                ins.getStudent().getFirstName() + " (" + ins.getStudent().getStudentId() + ")",
+                ins.getCourse().getName() + " (" + ins.getCourse().getCode() + ")",
+                ins.getEnrollmentDate()
             };
             tableModel.addRow(row);
         }

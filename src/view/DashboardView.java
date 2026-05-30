@@ -16,13 +16,14 @@ public class DashboardView extends JFrame {
 	private JButton btnSalir;
 
     // LISTAS MAESTRAS EN INGLÉS
-    private List<model.Estudiante> studentList;
-    private List<model.Curso> courseList;
-    private List<model.Inscripcion> enrollmentList;
-    private List<model.Evaluacion> listaEvaluaciones;
+    private List<model.Student> studentList;
+    private List<model.Course> courseList;
+    private List<model.Enrollment> enrollmentList;
+    private List<model.Evaluation> listaEvaluaciones;
 
     // 1. CONSTRUCTOR PARA EL ARRANQUE DESDE EL MAIN
     public DashboardView() {
+    	this(new java.util.ArrayList<>(), new java.util.ArrayList<>(), new java.util.ArrayList<>(), new java.util.ArrayList<>());
         // ¡ESTO ERA LO QUE FALTABA! Inicializar las listas vacías
         this.studentList = new ArrayList<>();
         this.courseList = new ArrayList<>();
@@ -34,11 +35,11 @@ public class DashboardView extends JFrame {
     }
 
     // 2. CONSTRUCTOR PARA CUANDO REGRESAS DE OTRA PANTALLA
-    public DashboardView(List<model.Estudiante> s, List<model.Curso> c, List<model.Inscripcion> i, List<model.Evaluacion> e) {
-    	this.studentList = s;
-        this.courseList = c;
-        this.enrollmentList = i;
-        this.listaEvaluaciones = (e != null) ? e : new ArrayList<>();
+    public DashboardView(List<model.Student> studentList, List<model.Course> courseList, List<model.Enrollment> enrollmentList, List<model.Evaluation> evaluationList) {
+    	this.studentList = studentList;
+        this.courseList = courseList;
+        this.enrollmentList = enrollmentList;
+        this.listaEvaluaciones = evaluationList;
         
         configurarVentana();
         inicializarComponentes();
@@ -138,31 +139,27 @@ public class DashboardView extends JFrame {
 	    return boton;
 	}
 
-    private void agregarEventos() {
-        btnStudents.addActionListener(e -> {
-            StudentsView window = new StudentsView(studentList, courseList, enrollmentList);
-            window.setVisible(true);
-            dispose();
-        });
+	private void agregarEventos() {
+	    btnStudents.addActionListener(e -> {
+	        new StudentsView(studentList, courseList, enrollmentList, listaEvaluaciones).setVisible(true);
+	        dispose();
+	    });
 
-        btnCourses.addActionListener(e -> {
-            CoursesView window = new CoursesView(studentList, courseList, enrollmentList);
-            window.setVisible(true);
-            dispose();
-        });
+	    btnCourses.addActionListener(e -> {
+	        new CoursesView(studentList, courseList, enrollmentList, listaEvaluaciones).setVisible(true);
+	        dispose();
+	    });
 
-        btnInscripciones.addActionListener(e -> {
-            InscripcionView window = new InscripcionView(studentList, courseList, enrollmentList);
-            window.setVisible(true);
-            dispose();
-        });
+	    btnInscripciones.addActionListener(e -> {
+	        new InscripcionView(studentList, courseList, enrollmentList, listaEvaluaciones).setVisible(true);
+	        dispose();
+	    });
 
-        btnEvaluaciones.addActionListener(e -> {
-        	EvaluacionesView window = new EvaluacionesView(studentList, courseList, enrollmentList, listaEvaluaciones);
-            window.setVisible(true);
-            dispose();
-        });
-        
-        btnSalir.addActionListener(e -> System.exit(0));
-    }
+	    btnEvaluaciones.addActionListener(e -> {
+	        new EvaluacionesView(studentList, courseList, enrollmentList, listaEvaluaciones).setVisible(true);
+	        dispose();
+	    });
+	    
+	    btnSalir.addActionListener(e -> System.exit(0));
+	}
 }

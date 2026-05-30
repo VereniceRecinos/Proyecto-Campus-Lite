@@ -1,8 +1,9 @@
 package view;
 
-import model.Curso;
-import model.Estudiante;
-import model.Inscripcion;
+import model.Course;
+import model.Student;
+import model.Enrollment;
+import model.Evaluation;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -30,15 +31,18 @@ public class CoursesView extends JFrame {
     private DefaultTableModel modeloTablaCursos;
 
     // Variables globales
-    private java.util.List<model.Curso> courseList;
-    private java.util.List<model.Estudiante> studentList;
-    private java.util.List<model.Inscripcion> enrollmentList;
+    private List<Student> studentList; 
+    private List<Course> courseList;       
+    private List<Enrollment> enrollmentList;
+    private List<Evaluation> evaluationList;
     private int contadorIdCurso = 1;
 
-    public CoursesView(java.util.List<model.Estudiante> studentList, java.util.List<model.Curso> courseList, java.util.List<model.Inscripcion> enrollmentList) {
+    public CoursesView(java.util.List<model.Student> studentList, java.util.List<model.Course> courseList, java.util.List<model.Enrollment> enrollmentList,  List<Evaluation> evaluationList) {
     	this.studentList = studentList;
         this.courseList = courseList;
         this.enrollmentList = enrollmentList;
+        this.evaluationList = evaluationList;
+        
         // 1. CONFIGURACIÓN DE LA VENTANA PRINCIPAL
         setTitle("EDUMANAGER DESKTOP - v2.4");
         setSize(1000, 600);
@@ -278,6 +282,9 @@ public class CoursesView extends JFrame {
                     if (confirmacion == JOptionPane.YES_OPTION) {
 
                     	courseList.remove(fila);
+                    	
+                    	utils.PersistenceManager.saveData(studentList, courseList, enrollmentList, evaluationList);
+                    	
                         actualizarTablaCursos();
 
                         JOptionPane.showMessageDialog(null, "Curso eliminado correctamente.");
@@ -340,7 +347,7 @@ public class CoursesView extends JFrame {
         });
         
         btnVolver.addActionListener(e -> {
-        	new DashboardView(studentList, courseList, enrollmentList, null).setVisible(true);
+        	new DashboardView(studentList, courseList, enrollmentList, evaluationList).setVisible(true);
             dispose();
         });
 
@@ -391,8 +398,10 @@ public class CoursesView extends JFrame {
         }
 
         // Integración con el objeto 'Curso'
-        Curso nuevoCurso = new Curso(codigo, nombre, cupo);
+        Course nuevoCurso = new Course(codigo, nombre, cupo);
         courseList.add(nuevoCurso);
+        
+        utils.PersistenceManager.saveData(studentList, courseList, enrollmentList, evaluationList);
 
         // Actualizar UI
         actualizarTablaCursos();
@@ -412,13 +421,13 @@ public class CoursesView extends JFrame {
 
         int index = 1;
 
-        for (Curso c : courseList) {
+        for (Course c : courseList) {
 
         	Object[] fila = {
         	        String.format("%03d", index++),
-        	        c.getCodigo(),
-        	        c.getNombre(),
-        	        c.getCupo(),
+        	        c.getCode(),
+        	        c.getName(),
+        	        c.getCapacity(),
         	        "<html><div style='text-align:center;'>" +
         	        "<span style='background-color:#e74c3c; color:white; padding:5px 12px; " +
         	        "border-radius:6px; font-weight:bold;'>✖</span></div></html>"

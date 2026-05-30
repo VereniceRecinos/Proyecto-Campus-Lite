@@ -1,5 +1,11 @@
 package model;
 
+import javax.swing.UIManager;
+import java.util.ArrayList;
+import java.util.List;
+import view.DashboardView;
+import utils.PersistenceManager;
+
     /*
 import java.util.ArrayList;
 import java.util.List;
@@ -11,29 +17,32 @@ import view.PantallaEstudiantes;
 */
 
 import javax.swing.UIManager;
-import view.DashboardView;
 
 public class Main {
 
 	public static void main(String[] args) {
-            
-            
-
-        try {
-
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName()
-            );
-
+		
+		try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 
-        java.awt.EventQueue.invokeLater(() -> {
+        // 1. Inicializar listas vacías
+        List<Student> studentList = new ArrayList<>();
+        List<Course> courseList = new ArrayList<>();
+        List<Enrollment> enrollmentList = new ArrayList<>();
+        List<Evaluation> evaluationList = new ArrayList<>();
 
-            new DashboardView().setVisible(true);
+        // 2. Cargar datos del disco duro a las listas
+        PersistenceManager.loadData(studentList, courseList, enrollmentList, evaluationList);
+
+        // 3. Arrancar la aplicación pasándole las listas llenas
+        java.awt.EventQueue.invokeLater(() -> {
+            new DashboardView(studentList, courseList, enrollmentList, evaluationList).setVisible(true);
         });
+    }
+            
         
             // se agrega Login
             
@@ -114,5 +123,5 @@ public class Main {
 		}
         }*/
                 
-}
+
 
