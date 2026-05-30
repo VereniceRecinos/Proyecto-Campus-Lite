@@ -8,7 +8,7 @@
 **Opción elegida:** Campus Lite - Opción A
 
 ## Versión de JDK utilizada
-**Java JDK 21 **Nota Importante:** Todos los miembros del equipo de desarrollo hemos configurado nuestro entorno y utilizamos exactamente la misma versión del JDK para evitar conflictos de compatibilidad durante la compilación y ejecución del proyecto.
+**Java JDK 11 **Nota Importante:** Todos los miembros del equipo de desarrollo hemos configurado nuestro entorno y utilizamos exactamente la misma versión del JDK para evitar conflictos de compatibilidad durante la compilación y ejecución del proyecto.
 
 ## Cómo clonar el repositorio
 Para obtener una copia local del proyecto, abre tu terminal (Símbolo del sistema, Git Bash o PowerShell) y ejecuta el siguiente comando:
